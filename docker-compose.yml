@@ -28,7 +28,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./migrations:/docker-entrypoint-initdb.d
     ports:
-      - "5432:5432"
+      - "5433:5432"  # Using 5433 externally to avoid conflicts
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U regstrava"]
       interval: 5s
@@ -38,7 +38,7 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "6380:6379"  # Using 6380 externally to avoid conflicts
     volumes:
       - redis_data:/data
     healthcheck:

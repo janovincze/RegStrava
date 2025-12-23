@@ -2,6 +2,9 @@ package api
 
 import (
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/regstrava/regstrava/internal/api/handlers"
@@ -33,6 +36,7 @@ func NewRouter(
 	// Create handlers
 	invoiceHandler := handlers.NewInvoiceHandler(invoiceService, hashService)
 	authHandler := handlers.NewAuthHandler(authService)
+	funderHandler := handlers.NewFunderHandler(funderRepo)
 
 	// Create middleware
 	authMiddleware := middleware.NewAuthMiddleware(authService)
@@ -40,8 +44,9 @@ func NewRouter(
 
 	// API v1 routes
 	r.Route("/api/v1", func(r chi.Router) {
-		// OAuth token endpoint (no auth required)
+		// Public endpoints (no auth required)
 		r.Post("/oauth/token", authHandler.Token)
+		r.Post("/funders/register", funderHandler.Register)
 
 		// Protected routes
 		r.Group(func(r chi.Router) {
@@ -61,8 +66,67 @@ func NewRouter(
 				// Unregister endpoint
 				r.Delete("/{hash}", invoiceHandler.Unregister)
 			})
+
+			// Funder profile endpoints
+			r.Route("/funders", func(r chi.Router) {
+				r.Get("/me", funderHandler.GetProfile)
+				r.Patch("/me", funderHandler.UpdateProfile)
+				r.Post("/me/regenerate-api-key", funderHandler.RegenerateAPIKey)
+				r.Get("/me/usage", funderHandler.GetUsageStats)
+			})
 		})
 	})
 
+	// Serve static files for the landing page
+	staticDir := getStaticDir()
+	fileServer(r, "/", http.Dir(staticDir))
+
 	return r
+}
+
+// getStaticDir returns the path to the static files directory
+func getStaticDir() string {
+	// Check for STATIC_DIR environment variable
+	if dir := os.Getenv("STATIC_DIR"); dir != "" {
+		return dir
+	}
+
+	// Default to ./web/static relative to working directory
+	return "./web/static"
+}
+
+// fileServer conveniently sets up a http.FileServer handler to serve static files
+func fileServer(r chi.Router, path string, root http.FileSystem) {
+	if strings.ContainsAny(path, "{}*") {
+		panic("FileServer does not permit any URL parameters.")
+	}
+
+	if path != "/" && path[len(path)-1] != '/' {
+		r.Get(path, http.RedirectHandler(path+"/", http.StatusMovedPermanently).ServeHTTP)
+		path += "/"
+	}
+	path += "*"
+
+	r.Get(path, func(w http.ResponseWriter, r *http.Request) {
+		rctx := chi.RouteContext(r.Context())
+		pathPrefix := strings.TrimSuffix(rctx.RoutePattern(), "/*")
+		fs := http.StripPrefix(pathPrefix, http.FileServer(root))
+
+		// Try to serve the file
+		filePath := strings.TrimPrefix(r.URL.Path, pathPrefix)
+		if filePath == "" || filePath == "/" {
+			filePath = "/index.html"
+		}
+
+		// Check if file exists
+		f, err := root.Open(filepath.Clean(filePath))
+		if err != nil {
+			// If file doesn't exist, serve index.html (for SPA routing)
+			r.URL.Path = pathPrefix + "/index.html"
+		} else {
+			f.Close()
+		}
+
+		fs.ServeHTTP(w, r)
+	})
 }

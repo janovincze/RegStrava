@@ -217,3 +217,20 @@ func (r *FunderRepository) Delete(ctx context.Context, id uuid.UUID) error {
 
 	return nil
 }
+
+// UpdateAPIKey updates only the API key hash for a funder
+func (r *FunderRepository) UpdateAPIKey(ctx context.Context, id uuid.UUID, apiKeyHash string) error {
+	query := `UPDATE funders SET api_key_hash = $2 WHERE id = $1`
+
+	result, err := r.db.ExecContext(ctx, query, id, apiKeyHash)
+	if err != nil {
+		return fmt.Errorf("failed to update API key: %w", err)
+	}
+
+	rows, _ := result.RowsAffected()
+	if rows == 0 {
+		return fmt.Errorf("funder not found")
+	}
+
+	return nil
+}

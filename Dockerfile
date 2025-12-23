@@ -27,6 +27,9 @@ RUN apk --no-cache add ca-certificates tzdata
 # Copy binary from builder
 COPY --from=builder /app/regstrava .
 
+# Copy static files
+COPY --from=builder /app/web/static ./web/static
+
 # Create non-root user
 RUN adduser -D -g '' appuser
 USER appuser

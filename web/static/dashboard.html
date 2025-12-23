@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - RegStrava</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="logo">
+                <span class="logo-icon">🛡️</span>
+                <span class="logo-text">RegStrava</span>
+            </a>
+            <div class="nav-links">
+                <span id="nav-funder-name" class="nav-user"></span>
+                <a href="/" class="btn btn-outline">Home</a>
+                <button onclick="logout()" class="btn btn-outline">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a href="#overview" class="sidebar-link active" onclick="showSection('overview')">
+                    <span>📊</span> Overview
+                </a>
+                <a href="#api-keys" class="sidebar-link" onclick="showSection('api-keys')">
+                    <span>🔑</span> API Keys
+                </a>
+                <a href="#test-api" class="sidebar-link" onclick="showSection('test-api')">
+                    <span>🧪</span> Test API
+                </a>
+                <a href="#docs" class="sidebar-link" onclick="showSection('docs')">
+                    <span>📖</span> Documentation
+                </a>
+                <a href="#settings" class="sidebar-link" onclick="showSection('settings')">
+                    <span>⚙️</span> Settings
+                </a>
+            </nav>
+        </aside>
+
+        <main class="dashboard-main" id="dashboard-content">
+            <!-- Overview Section -->
+            <section id="section-overview" class="dashboard-section active">
+                <div class="section-header">
+                    <h1>Welcome back, <span id="funder-name">Funder</span></h1>
+                    <p>Manage your invoice registry integration</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📤</div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="daily-limit">1,000</span>
+                            <span class="stat-label">Daily Limit</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="monthly-limit">20,000</span>
+                            <span class="stat-label">Monthly Limit</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔐</div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="tracking-status">Enabled</span>
+                            <span class="stat-label">Funder Tracking</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <span class="stat-value">Active</span>
+                            <span class="stat-label">Account Status</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-start">
+                    <h2>Quick Start</h2>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>Check if invoice is funded</span>
+                            <button class="copy-btn" onclick="copyCode('check-code')">Copy</button>
+                        </div>
+                        <pre id="check-code">curl -X POST <span class="api-url"></span>/api/v1/invoices/check-raw \
+  -H "X-API-Key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "invoice_number": "INV-2024-001",
+    "issuer_tax_id": "DE123456789",
+    "amount": 10000.00,
+    "currency": "EUR"
+  }'</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- API Keys Section -->
+            <section id="section-api-keys" class="dashboard-section">
+                <div class="section-header">
+                    <h1>API Keys</h1>
+                    <p>Manage your API credentials</p>
+                </div>
+
+                <div class="card">
+                    <h3>Current API Key</h3>
+                    <p class="text-muted">Use this key in the X-API-Key header</p>
+                    <div class="api-key-display">
+                        <code id="current-api-key">Loading...</code>
+                        <button class="btn btn-outline" onclick="copyApiKey()">Copy</button>
+                    </div>
+                    <button class="btn btn-danger" onclick="regenerateApiKey()">
+                        Regenerate API Key
+                    </button>
+                    <p class="warning-text">⚠️ Regenerating will invalidate your current key immediately.</p>
+                </div>
+
+                <div class="card">
+                    <h3>OAuth 2.0 Credentials</h3>
+                    <p class="text-muted">For enterprise integrations using OAuth client credentials flow</p>
+                    <div class="oauth-info">
+                        <div class="form-group">
+                            <label>Client ID</label>
+                            <code id="oauth-client-id-display">Available at signup only</code>
+                        </div>
+                        <p class="info-text">ℹ️ OAuth credentials are only shown during account creation. Contact support if you need new OAuth credentials.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Test API Section -->
+            <section id="section-test-api" class="dashboard-section">
+                <div class="section-header">
+                    <h1>Test API</h1>
+                    <p>Try out the API with sample requests</p>
+                </div>
+
+                <div class="card">
+                    <h3>Check Invoice Status</h3>
+                    <p class="text-muted">Test the API with a sample invoice check</p>
+                    <button class="btn btn-primary" onclick="testCheckInvoice()">
+                        Run Test Check
+                    </button>
+                    <div id="test-result" class="test-result"></div>
+                </div>
+
+                <div class="card">
+                    <h3>API Endpoints</h3>
+                    <table class="endpoints-table">
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Endpoint</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="method post">POST</span></td>
+                                <td><code>/api/v1/invoices/check</code></td>
+                                <td>Check with pre-hashed data</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method post">POST</span></td>
+                                <td><code>/api/v1/invoices/check-raw</code></td>
+                                <td>Check with raw invoice data</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method post">POST</span></td>
+                                <td><code>/api/v1/invoices/register</code></td>
+                                <td>Register with pre-hashed data</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method post">POST</span></td>
+                                <td><code>/api/v1/invoices/register-raw</code></td>
+                                <td>Register with raw invoice data</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method delete">DELETE</span></td>
+                                <td><code>/api/v1/invoices/{hash}</code></td>
+                                <td>Unregister an invoice</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Documentation Section -->
+            <section id="section-docs" class="dashboard-section">
+                <div class="section-header">
+                    <h1>Documentation</h1>
+                    <p>Learn how to integrate RegStrava</p>
+                </div>
+
+                <div class="docs-grid">
+                    <div class="card">
+                        <h3>🚀 Quick Start</h3>
+                        <p>Get up and running in minutes with our step-by-step guide.</p>
+                        <a href="https://github.com/janovincze/RegStrava#quick-start" target="_blank" class="btn btn-outline">View Guide</a>
+                    </div>
+                    <div class="card">
+                        <h3>📡 API Reference</h3>
+                        <p>Complete API documentation with examples.</p>
+                        <a href="https://github.com/janovincze/RegStrava#api-usage" target="_blank" class="btn btn-outline">View Docs</a>
+                    </div>
+                    <div class="card">
+                        <h3>📦 Go SDK</h3>
+                        <p>Official Go SDK for client-side hashing.</p>
+                        <a href="https://github.com/janovincze/RegStrava#go-sdk" target="_blank" class="btn btn-outline">View SDK</a>
+                    </div>
+                    <div class="card">
+                        <h3>🔒 Security</h3>
+                        <p>Learn about our privacy-preserving approach.</p>
+                        <a href="https://github.com/janovincze/RegStrava#security" target="_blank" class="btn btn-outline">Learn More</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="section-settings" class="dashboard-section">
+                <div class="section-header">
+                    <h1>Settings</h1>
+                    <p>Manage your account settings</p>
+                </div>
+
+                <div class="card">
+                    <h3>Profile Information</h3>
+                    <form id="profile-form" onsubmit="updateProfile(event)">
+                        <div class="form-group">
+                            <label for="profile-name">Name</label>
+                            <input type="text" id="profile-name" name="name">
+                        </div>
+                        <div class="form-group">
+                            <label>Funder ID</label>
+                            <code id="funder-id">Loading...</code>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Funder Tracking</h3>
+                    <p class="text-muted">Allow tracking of your funding registrations for audit purposes.</p>
+                    <div class="toggle-group">
+                        <label class="toggle">
+                            <input type="checkbox" id="tracking-toggle" onchange="updateTracking()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span>Enable funder tracking</span>
+                    </div>
+                </div>
+
+                <div class="card danger-zone">
+                    <h3>Danger Zone</h3>
+                    <p class="text-muted">Irreversible actions</p>
+                    <button class="btn btn-danger" onclick="logout()">
+                        Logout from all devices
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set API URL in examples
+            document.querySelectorAll('.api-url').forEach(el => {
+                el.textContent = window.location.origin;
+            });
+
+            // Load funder name from storage
+            const funderName = localStorage.getItem('regstrava_funder_name');
+            if (funderName) {
+                document.getElementById('nav-funder-name').textContent = funderName;
+            }
+
+            // Load API key preview
+            const apiKey = localStorage.getItem('regstrava_api_key');
+            if (apiKey) {
+                document.getElementById('current-api-key').textContent = apiKey.substring(0, 20) + '...';
+            }
+
+            // Load dashboard data
+            loadDashboard();
+        });
+
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.dashboard-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active from all links
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById('section-' + sectionId).classList.add('active');
+
+            // Mark link as active
+            event.target.closest('.sidebar-link').classList.add('active');
+        }
+
+        function copyCode(elementId) {
+            const code = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(code);
+        }
+
+        function copyApiKey() {
+            const apiKey = localStorage.getItem('regstrava_api_key');
+            navigator.clipboard.writeText(apiKey).then(() => {
+                alert('API Key copied to clipboard!');
+            });
+        }
+
+        async function updateProfile(e) {
+            e.preventDefault();
+            const apiKey = localStorage.getItem('regstrava_api_key');
+            const name = document.getElementById('profile-name').value;
+
+            try {
+                const response = await fetch('/api/v1/funders/me', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-Key': apiKey
+                    },
+                    body: JSON.stringify({ name })
+                });
+
+                if (response.ok) {
+                    localStorage.setItem('regstrava_funder_name', name);
+                    document.getElementById('funder-name').textContent = name;
+                    document.getElementById('nav-funder-name').textContent = name;
+                    alert('Profile updated!');
+                }
+            } catch (error) {
+                alert('Error updating profile');
+            }
+        }
+
+        async function updateTracking() {
+            const apiKey = localStorage.getItem('regstrava_api_key');
+            const tracking = document.getElementById('tracking-toggle').checked;
+
+            try {
+                await fetch('/api/v1/funders/me', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-Key': apiKey
+                    },
+                    body: JSON.stringify({ track_fundings: tracking })
+                });
+            } catch (error) {
+                alert('Error updating tracking settings');
+            }
+        }
+    </script>
+</body>
+</html>

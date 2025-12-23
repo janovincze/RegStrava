@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RegStrava - Invoice Funding Registry</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="logo">
+                <span class="logo-icon">🛡️</span>
+                <span class="logo-text">RegStrava</span>
+            </a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#pricing">Pricing</a>
+                <a href="/dashboard.html" class="btn btn-outline">Dashboard</a>
+                <a href="#signup" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Prevent Invoice Double-Funding</h1>
+                <p class="hero-subtitle">
+                    A privacy-preserving registry that lets funders verify invoices haven't been funded elsewhere.
+                    Protect your investments without exposing sensitive data.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#signup" class="btn btn-primary btn-large">Start Free Trial</a>
+                    <a href="#how-it-works" class="btn btn-outline btn-large">Learn More</a>
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Privacy Preserved</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">&lt;50ms</span>
+                    <span class="stat-label">Response Time</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">256-bit</span>
+                    <span class="stat-label">Encryption</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="problem" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>The Problem</h2>
+                <p>Invoice factoring fraud costs the industry billions annually</p>
+            </div>
+            <div class="problem-content">
+                <div class="problem-card">
+                    <div class="problem-icon">⚠️</div>
+                    <h3>Double Funding</h3>
+                    <p>The same invoice gets funded by multiple funders simultaneously, leaving everyone at risk.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">🔓</div>
+                    <h3>No Shared Registry</h3>
+                    <p>Funders operate in silos with no way to check if an invoice is already funded elsewhere.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon">🕵️</div>
+                    <h3>Privacy Concerns</h3>
+                    <p>Sharing raw invoice data exposes sensitive business relationships and trade secrets.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Solution</h2>
+                <p>Privacy-preserving invoice verification through blind hashing</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Blind Hashing</h3>
+                    <p>Invoice data is cryptographically hashed before storage. We never see raw invoice details.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Multi-Level Matching</h3>
+                    <p>4 hash levels accommodate varying data availability across funders.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Real-Time Checks</h3>
+                    <p>Instant verification with sub-50ms response times.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔑</div>
+                    <h3>Simple Integration</h3>
+                    <p>REST API with API keys or OAuth 2.0. SDKs for major languages.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Rate Limiting</h3>
+                    <p>Per-funder limits prevent abuse while ensuring fair access.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⏱️</div>
+                    <h3>Auto Expiration</h3>
+                    <p>Set custom TTL for registrations. Clean up automatically.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>How It Works</h2>
+                <p>Simple 3-step process to protect your funding decisions</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Check</h3>
+                    <p>Before funding, send invoice hash to verify it's not already registered.</p>
+                    <code>POST /api/v1/invoices/check</code>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Register</h3>
+                    <p>If clear, register the invoice as funded to protect other funders.</p>
+                    <code>POST /api/v1/invoices/register</code>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Protected</h3>
+                    <p>Other funders will now see this invoice is already funded.</p>
+                    <code>{"funded": true}</code>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2>Simple Pricing</h2>
+                <p>Start free, scale as you grow</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Starter</h3>
+                    <div class="price">Free</div>
+                    <ul>
+                        <li>1,000 checks/month</li>
+                        <li>500 registrations/month</li>
+                        <li>API access</li>
+                        <li>Email support</li>
+                    </ul>
+                    <a href="#signup" class="btn btn-outline">Get Started</a>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="featured-badge">Popular</div>
+                    <h3>Professional</h3>
+                    <div class="price">$99<span>/month</span></div>
+                    <ul>
+                        <li>20,000 checks/month</li>
+                        <li>10,000 registrations/month</li>
+                        <li>OAuth 2.0 support</li>
+                        <li>Priority support</li>
+                        <li>SDK access</li>
+                    </ul>
+                    <a href="#signup" class="btn btn-primary">Get Started</a>
+                </div>
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <div class="price">Custom</div>
+                    <ul>
+                        <li>Unlimited checks</li>
+                        <li>Unlimited registrations</li>
+                        <li>Dedicated support</li>
+                        <li>SLA guarantee</li>
+                        <li>On-premise option</li>
+                    </ul>
+                    <a href="mailto:sales@regstrava.com" class="btn btn-outline">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="signup" class="section">
+        <div class="container">
+            <div class="signup-container">
+                <div class="signup-info">
+                    <h2>Get Started Today</h2>
+                    <p>Create your account and get API credentials instantly. No credit card required for the free tier.</p>
+                    <ul class="signup-benefits">
+                        <li>✓ Instant API key generation</li>
+                        <li>✓ Full API access</li>
+                        <li>✓ Comprehensive documentation</li>
+                        <li>✓ Free forever tier available</li>
+                    </ul>
+                </div>
+                <div class="signup-form-container">
+                    <form id="signup-form" class="signup-form">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" required placeholder="John Smith">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" required placeholder="john@company.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="company">Company Name</label>
+                            <input type="text" id="company" name="company" placeholder="Acme Funding Inc.">
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="track_fundings" name="track_fundings">
+                            <label for="track_fundings">Allow tracking of my fundings for audit purposes</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                        <p class="form-note">By signing up, you agree to our Terms of Service and Privacy Policy.</p>
+                    </form>
+
+                    <div id="signup-success" class="signup-success" style="display: none;">
+                        <div class="success-icon">✅</div>
+                        <h3>Account Created!</h3>
+                        <p>Save your credentials below. They will not be shown again.</p>
+
+                        <div class="credentials-box">
+                            <div class="credential">
+                                <label>API Key</label>
+                                <div class="credential-value">
+                                    <code id="api-key-value"></code>
+                                    <button class="copy-btn" onclick="copyToClipboard('api-key-value')">Copy</button>
+                                </div>
+                            </div>
+                            <div class="credential">
+                                <label>OAuth Client ID</label>
+                                <div class="credential-value">
+                                    <code id="oauth-client-id"></code>
+                                    <button class="copy-btn" onclick="copyToClipboard('oauth-client-id')">Copy</button>
+                                </div>
+                            </div>
+                            <div class="credential">
+                                <label>OAuth Secret</label>
+                                <div class="credential-value">
+                                    <code id="oauth-secret"></code>
+                                    <button class="copy-btn" onclick="copyToClipboard('oauth-secret')">Copy</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="/dashboard.html" class="btn btn-primary btn-block">Go to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo-icon">🛡️</span>
+                    <span class="logo-text">RegStrava</span>
+                    <p>Preventing invoice double-funding through privacy-preserving technology.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="#features">Features</a>
+                        <a href="#pricing">Pricing</a>
+                        <a href="/docs">Documentation</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <a href="/about">About</a>
+                        <a href="/contact">Contact</a>
+                        <a href="/careers">Careers</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <a href="/privacy">Privacy Policy</a>
+                        <a href="/terms">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 RegStrava. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
