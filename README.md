@@ -16,6 +16,8 @@ All while maintaining **complete anonymity** of invoice issuers through blind ha
 
 ## Features
 
+- **Self-service signup** - Landing page with instant API key generation
+- **Funder dashboard** - Manage API keys, view docs, test the API
 - **Multi-level hashing (L1-L4)** - Different hash levels for varying invoice detail availability
 - **Hybrid hashing** - Server-side for convenience, client SDK for maximum privacy
 - **Dual authentication** - API Keys for simplicity, OAuth 2.0 for enterprise
@@ -50,26 +52,26 @@ cd RegStrava
 # Start all services
 docker-compose up -d
 
-# Wait for services to be ready, then seed test data
-docker-compose exec app ./regstrava seed
-# Or if running locally:
-make seed
+# Open http://localhost:8080 to access the landing page
+# Sign up to get your API key instantly!
 ```
 
 ### Run Locally
 
 ```bash
-# Start infrastructure only
+# Start infrastructure only (uses ports 5433 and 6380 to avoid conflicts)
 docker-compose up -d postgres redis
 
 # Set environment variables
 export HMAC_KEY="your-super-secret-hmac-key"
 export JWT_SECRET="your-super-secret-jwt-key"
-export DATABASE_URL="postgres://regstrava:regstrava@localhost:5432/regstrava?sslmode=disable"
-export REDIS_URL="redis://localhost:6379"
+export DATABASE_URL="postgres://regstrava:regstrava@localhost:5433/regstrava?sslmode=disable"
+export REDIS_URL="redis://localhost:6380"
 
 # Build and run
 make run
+
+# Open http://localhost:8080 for the landing page
 ```
 
 ## API Usage
