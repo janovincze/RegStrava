@@ -36,10 +36,12 @@ type InvoiceCheckRequest struct {
 type InvoiceCheckRawRequest struct {
 	InvoiceNumber string   `json:"invoice_number" validate:"required"`
 	IssuerTaxID   string   `json:"issuer_tax_id" validate:"required"`
+	IssuerCountry string   `json:"issuer_country" validate:"required"`
 	Amount        *float64 `json:"amount,omitempty"`
 	Currency      string   `json:"currency,omitempty"`
 	InvoiceDate   string   `json:"invoice_date,omitempty"`
 	BuyerTaxID    string   `json:"buyer_tax_id,omitempty"`
+	BuyerCountry  string   `json:"buyer_country,omitempty"` // Required if buyer_tax_id is provided
 }
 
 // InvoiceCheckResponse represents the response for an invoice check
@@ -61,10 +63,12 @@ type InvoiceRegisterRequest struct {
 type InvoiceRegisterRawRequest struct {
 	InvoiceNumber string   `json:"invoice_number" validate:"required"`
 	IssuerTaxID   string   `json:"issuer_tax_id" validate:"required"`
+	IssuerCountry string   `json:"issuer_country" validate:"required"`
 	Amount        *float64 `json:"amount,omitempty"`
 	Currency      string   `json:"currency,omitempty"`
 	InvoiceDate   string   `json:"invoice_date,omitempty"`
 	BuyerTaxID    string   `json:"buyer_tax_id,omitempty"`
+	BuyerCountry  string   `json:"buyer_country,omitempty"` // Required if buyer_tax_id is provided
 	FundingDate   string   `json:"funding_date" validate:"required"`
 	TrackFunder   bool     `json:"track_funder"`
 	ExpiresInDays *int     `json:"expires_in_days,omitempty"`

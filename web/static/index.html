@@ -5,22 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RegStrava - Invoice Funding Registry</title>
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar">
         <div class="container nav-container">
             <a href="/" class="logo">
-                <span class="logo-icon">🛡️</span>
                 <span class="logo-text">RegStrava</span>
             </a>
             <div class="nav-links">
-                <a href="#features">Features</a>
-                <a href="#how-it-works">How It Works</a>
-                <a href="#pricing">Pricing</a>
-                <a href="/dashboard.html" class="btn btn-outline">Dashboard</a>
+                <a href="#features" class="nav-item"><span class="nav-item__num">I</span> Features</a>
+                <a href="#how-it-works" class="nav-item"><span class="nav-item__num">II</span> Process</a>
+                <a href="#data-rules" class="nav-item"><span class="nav-item__num">III</span> Rules</a>
+                <a href="#pricing" class="nav-item"><span class="nav-item__num">IV</span> Pricing</a>
+                <a href="/dashboard.html" class="btn btn-ghost">Dashboard</a>
                 <a href="#signup" class="btn btn-primary">Get Started</a>
             </div>
         </div>
@@ -28,18 +25,17 @@
 
     <header class="hero">
         <div class="container">
-            <div class="hero-content">
+            <div class="hero-content animate-in">
                 <h1>Prevent Invoice Double-Funding</h1>
                 <p class="hero-subtitle">
-                    A privacy-preserving registry that lets funders verify invoices haven't been funded elsewhere.
-                    Protect your investments without exposing sensitive data.
+                    A privacy-preserving registry that lets funders verify invoices haven't been funded elsewhere. Protect your investments without exposing sensitive data.
                 </p>
                 <div class="hero-buttons">
                     <a href="#signup" class="btn btn-primary btn-large">Start Free Trial</a>
-                    <a href="#how-it-works" class="btn btn-outline btn-large">Learn More</a>
+                    <a href="#how-it-works" class="btn btn-ghost btn-large">Learn More</a>
                 </div>
             </div>
-            <div class="hero-stats">
+            <div class="hero-stats animate-in">
                 <div class="stat">
                     <span class="stat-number">100%</span>
                     <span class="stat-label">Privacy Preserved</span>
@@ -64,17 +60,17 @@
             </div>
             <div class="problem-content">
                 <div class="problem-card">
-                    <div class="problem-icon">⚠️</div>
+                    <div class="problem-icon">01</div>
                     <h3>Double Funding</h3>
                     <p>The same invoice gets funded by multiple funders simultaneously, leaving everyone at risk.</p>
                 </div>
                 <div class="problem-card">
-                    <div class="problem-icon">🔓</div>
+                    <div class="problem-icon">02</div>
                     <h3>No Shared Registry</h3>
                     <p>Funders operate in silos with no way to check if an invoice is already funded elsewhere.</p>
                 </div>
                 <div class="problem-card">
-                    <div class="problem-icon">🕵️</div>
+                    <div class="problem-icon">03</div>
                     <h3>Privacy Concerns</h3>
                     <p>Sharing raw invoice data exposes sensitive business relationships and trade secrets.</p>
                 </div>
@@ -90,32 +86,32 @@
             </div>
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">🔐</div>
+                    <div class="feature-icon">01</div>
                     <h3>Blind Hashing</h3>
                     <p>Invoice data is cryptographically hashed before storage. We never see raw invoice details.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🔄</div>
+                    <div class="feature-icon">02</div>
                     <h3>Multi-Level Matching</h3>
                     <p>4 hash levels accommodate varying data availability across funders.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
+                    <div class="feature-icon">03</div>
                     <h3>Real-Time Checks</h3>
                     <p>Instant verification with sub-50ms response times.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🔑</div>
+                    <div class="feature-icon">04</div>
                     <h3>Simple Integration</h3>
                     <p>REST API with API keys or OAuth 2.0. SDKs for major languages.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📊</div>
+                    <div class="feature-icon">05</div>
                     <h3>Rate Limiting</h3>
                     <p>Per-funder limits prevent abuse while ensuring fair access.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">⏱️</div>
+                    <div class="feature-icon">06</div>
                     <h3>Auto Expiration</h3>
                     <p>Set custom TTL for registrations. Clean up automatically.</p>
                 </div>
@@ -136,20 +132,172 @@
                     <p>Before funding, send invoice hash to verify it's not already registered.</p>
                     <code>POST /api/v1/invoices/check</code>
                 </div>
-                <div class="step-arrow">→</div>
+                <div class="step-arrow">&rarr;</div>
                 <div class="step">
                     <div class="step-number">2</div>
                     <h3>Register</h3>
                     <p>If clear, register the invoice as funded to protect other funders.</p>
                     <code>POST /api/v1/invoices/register</code>
                 </div>
-                <div class="step-arrow">→</div>
+                <div class="step-arrow">&rarr;</div>
                 <div class="step">
                     <div class="step-number">3</div>
                     <h3>Protected</h3>
                     <p>Other funders will now see this invoice is already funded.</p>
                     <code>{"funded": true}</code>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="data-rules" class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2>Data Entry Rules</h2>
+                <p>Consistent data entry is critical for accurate matching</p>
+            </div>
+
+            <div class="rules-intro">
+                <div class="important-notice">
+                    <h3>Why Exact Matching Matters</h3>
+                    <p>RegStrava uses cryptographic hashing to match invoices. Even a single character difference will produce a completely different hash, resulting in a failed match. <strong>Enter all values exactly as they appear on the invoice.</strong></p>
+                </div>
+            </div>
+
+            <div class="rules-grid">
+                <div class="rule-card">
+                    <div class="rule-header">
+                        <span class="rule-icon">INV</span>
+                        <h3>Invoice Number</h3>
+                    </div>
+                    <div class="rule-content">
+                        <p class="rule-critical">Enter exactly as printed on the invoice</p>
+                        <ul class="rule-list">
+                            <li>Include all prefixes, suffixes, and separators</li>
+                            <li>Preserve hyphens, slashes, and special characters</li>
+                            <li>Leading zeros matter: "0001" is different from "1"</li>
+                        </ul>
+                        <div class="rule-examples">
+                            <div class="example correct">
+                                <span class="label">Correct</span>
+                                <code>INV-2024/001</code>
+                            </div>
+                            <div class="example incorrect">
+                                <span class="label">Wrong</span>
+                                <code>INV2024001</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rule-card">
+                    <div class="rule-header">
+                        <span class="rule-icon">TAX</span>
+                        <h3>Tax ID / VAT Number</h3>
+                    </div>
+                    <div class="rule-content">
+                        <p class="rule-critical">Enter the numeric/alphanumeric portion only</p>
+                        <ul class="rule-list">
+                            <li>Remove country prefix (enter country separately)</li>
+                            <li>Spaces and punctuation are ignored</li>
+                            <li>Letters are converted to uppercase</li>
+                        </ul>
+                        <div class="rule-examples">
+                            <div class="example correct">
+                                <span class="label">Correct</span>
+                                <code>123456789</code> + Country: <code>DE</code>
+                            </div>
+                            <div class="example incorrect">
+                                <span class="label">Wrong</span>
+                                <code>DE123456789</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rule-card">
+                    <div class="rule-header">
+                        <span class="rule-icon">EUR</span>
+                        <h3>Amount & Currency</h3>
+                    </div>
+                    <div class="rule-content">
+                        <p class="rule-critical">Use the exact invoice total amount</p>
+                        <ul class="rule-list">
+                            <li>Enter gross amount (including VAT/tax)</li>
+                            <li>Use decimal point, not comma: 1234.56</li>
+                            <li>No thousands separators</li>
+                            <li>Currency as 3-letter ISO code: EUR, USD, GBP</li>
+                        </ul>
+                        <div class="rule-examples">
+                            <div class="example correct">
+                                <span class="label">Correct</span>
+                                <code>12345.67</code> <code>EUR</code>
+                            </div>
+                            <div class="example incorrect">
+                                <span class="label">Wrong</span>
+                                <code>12,345.67</code> or <code>12345,67</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rule-card">
+                    <div class="rule-header">
+                        <span class="rule-icon">ISO</span>
+                        <h3>Country Codes</h3>
+                    </div>
+                    <div class="rule-content">
+                        <p class="rule-critical">Use ISO 3166-1 alpha-2 codes</p>
+                        <ul class="rule-list">
+                            <li>2-letter uppercase country codes</li>
+                            <li>Use country where entity is tax-registered</li>
+                            <li>Required for both issuer and buyer (if provided)</li>
+                        </ul>
+                        <div class="rule-examples">
+                            <div class="example correct">
+                                <span class="label">Examples</span>
+                                <code>DE</code> <code>AT</code> <code>FR</code> <code>NL</code> <code>US</code> <code>GB</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hash-levels-section">
+                <h3>Hash Levels Explained</h3>
+                <p>We generate multiple hash levels to accommodate varying data availability across funders:</p>
+                <table class="hash-levels-table">
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>Fields Required</th>
+                            <th>Use Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="level-badge l1">L1</span></td>
+                            <td>Invoice Number + Issuer Tax ID + Issuer Country</td>
+                            <td>Minimum viable check - basic invoice identification</td>
+                        </tr>
+                        <tr>
+                            <td><span class="level-badge l2">L2</span></td>
+                            <td>L1 + Amount + Currency</td>
+                            <td>Standard check - catches most duplicates</td>
+                        </tr>
+                        <tr>
+                            <td><span class="level-badge l3">L3</span></td>
+                            <td>L2 + Invoice Date</td>
+                            <td>Date-specific check - distinguishes recurring invoices</td>
+                        </tr>
+                        <tr>
+                            <td><span class="level-badge l4">L4</span></td>
+                            <td>L3 + Buyer Tax ID + Buyer Country</td>
+                            <td>Full check - complete invoice fingerprint</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="hash-note">Higher levels provide more precise matching but require more data. A match at any level indicates the invoice may already be funded.</p>
             </div>
         </div>
     </section>
@@ -170,7 +318,7 @@
                         <li>API access</li>
                         <li>Email support</li>
                     </ul>
-                    <a href="#signup" class="btn btn-outline">Get Started</a>
+                    <a href="#signup" class="btn btn-ghost btn-block">Get Started</a>
                 </div>
                 <div class="pricing-card featured">
                     <div class="featured-badge">Popular</div>
@@ -183,7 +331,7 @@
                         <li>Priority support</li>
                         <li>SDK access</li>
                     </ul>
-                    <a href="#signup" class="btn btn-primary">Get Started</a>
+                    <a href="#signup" class="btn btn-primary btn-block">Get Started</a>
                 </div>
                 <div class="pricing-card">
                     <h3>Enterprise</h3>
@@ -195,7 +343,7 @@
                         <li>SLA guarantee</li>
                         <li>On-premise option</li>
                     </ul>
-                    <a href="mailto:sales@regstrava.com" class="btn btn-outline">Contact Sales</a>
+                    <a href="mailto:sales@regstrava.com" class="btn btn-ghost btn-block">Contact Sales</a>
                 </div>
             </div>
         </div>
@@ -208,10 +356,10 @@
                     <h2>Get Started Today</h2>
                     <p>Create your account and get API credentials instantly. No credit card required for the free tier.</p>
                     <ul class="signup-benefits">
-                        <li>✓ Instant API key generation</li>
-                        <li>✓ Full API access</li>
-                        <li>✓ Comprehensive documentation</li>
-                        <li>✓ Free forever tier available</li>
+                        <li>Instant API key generation</li>
+                        <li>Full API access</li>
+                        <li>Comprehensive documentation</li>
+                        <li>Free forever tier available</li>
                     </ul>
                 </div>
                 <div class="signup-form-container">
@@ -237,8 +385,8 @@
                     </form>
 
                     <div id="signup-success" class="signup-success" style="display: none;">
-                        <div class="success-icon">✅</div>
-                        <h3>Account Created!</h3>
+                        <div class="success-icon">&#10003;</div>
+                        <h3>Account Created</h3>
                         <p>Save your credentials below. They will not be shown again.</p>
 
                         <div class="credentials-box">
@@ -276,8 +424,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <span class="logo-icon">🛡️</span>
-                    <span class="logo-text">RegStrava</span>
+                    <a href="/" class="logo">RegStrava</a>
                     <p>Preventing invoice double-funding through privacy-preserving technology.</p>
                 </div>
                 <div class="footer-links">

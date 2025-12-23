@@ -6,21 +6,17 @@
     <title>Dashboard - RegStrava</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/dashboard.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="dashboard-body">
     <nav class="navbar">
         <div class="container nav-container">
             <a href="/" class="logo">
-                <span class="logo-icon">🛡️</span>
                 <span class="logo-text">RegStrava</span>
             </a>
             <div class="nav-links">
                 <span id="nav-funder-name" class="nav-user"></span>
-                <a href="/" class="btn btn-outline">Home</a>
-                <button onclick="logout()" class="btn btn-outline">Logout</button>
+                <a href="/" class="btn btn-ghost">Home</a>
+                <button onclick="logout()" class="btn btn-ghost">Logout</button>
             </div>
         </div>
     </nav>
@@ -29,19 +25,22 @@
         <aside class="sidebar">
             <nav class="sidebar-nav">
                 <a href="#overview" class="sidebar-link active" onclick="showSection('overview')">
-                    <span>📊</span> Overview
+                    <span>I</span> Overview
+                </a>
+                <a href="#invoices" class="sidebar-link" onclick="showSection('invoices')">
+                    <span>II</span> Invoices
                 </a>
                 <a href="#api-keys" class="sidebar-link" onclick="showSection('api-keys')">
-                    <span>🔑</span> API Keys
+                    <span>III</span> API Keys
                 </a>
                 <a href="#test-api" class="sidebar-link" onclick="showSection('test-api')">
-                    <span>🧪</span> Test API
+                    <span>IV</span> Test API
                 </a>
                 <a href="#docs" class="sidebar-link" onclick="showSection('docs')">
-                    <span>📖</span> Documentation
+                    <span>V</span> Documentation
                 </a>
                 <a href="#settings" class="sidebar-link" onclick="showSection('settings')">
-                    <span>⚙️</span> Settings
+                    <span>VI</span> Settings
                 </a>
             </nav>
         </aside>
@@ -56,28 +55,28 @@
 
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-icon">📤</div>
+                        <div class="stat-icon">01</div>
                         <div class="stat-info">
                             <span class="stat-value" id="daily-limit">1,000</span>
                             <span class="stat-label">Daily Limit</span>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">📅</div>
+                        <div class="stat-icon">02</div>
                         <div class="stat-info">
                             <span class="stat-value" id="monthly-limit">20,000</span>
                             <span class="stat-label">Monthly Limit</span>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">🔐</div>
+                        <div class="stat-icon">03</div>
                         <div class="stat-info">
                             <span class="stat-value" id="tracking-status">Enabled</span>
                             <span class="stat-label">Funder Tracking</span>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon">✅</div>
+                        <div class="stat-icon">04</div>
                         <div class="stat-info">
                             <span class="stat-value">Active</span>
                             <span class="stat-label">Account Status</span>
@@ -97,10 +96,152 @@
   -H "Content-Type: application/json" \
   -d '{
     "invoice_number": "INV-2024-001",
-    "issuer_tax_id": "DE123456789",
+    "issuer_tax_id": "123456789",
+    "issuer_country": "DE",
     "amount": 10000.00,
     "currency": "EUR"
   }'</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Invoices Section -->
+            <section id="section-invoices" class="dashboard-section">
+                <div class="section-header">
+                    <h1>Invoice Management</h1>
+                    <p>Check and register invoices manually</p>
+                </div>
+
+                <div class="data-rules-notice">
+                    <div class="notice-icon">!</div>
+                    <div class="notice-content">
+                        <strong>Enter data exactly as it appears on the invoice</strong>
+                        <p>Even a single character difference will produce a different hash and fail to match. See the <a href="/#data-rules">Data Entry Rules</a> for detailed formatting guidelines.</p>
+                    </div>
+                </div>
+
+                <div class="invoice-grid">
+                    <!-- Check Invoice Card -->
+                    <div class="card">
+                        <h3>Check Invoice</h3>
+                        <p class="text-muted">Verify if an invoice is already funded</p>
+                        <form id="check-invoice-form" onsubmit="checkInvoice(event)">
+                            <div class="form-group">
+                                <label for="check-invoice-number">Invoice Number <span class="required">*</span></label>
+                                <input type="text" id="check-invoice-number" required placeholder="INV-2024-001">
+                                <span class="field-hint">Exactly as printed, including hyphens and prefixes</span>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="check-issuer-tax-id">Issuer Tax ID <span class="required">*</span></label>
+                                    <input type="text" id="check-issuer-tax-id" required placeholder="123456789">
+                                    <span class="field-hint">Numbers only, no country prefix</span>
+                                </div>
+                                <div class="form-group form-group-small">
+                                    <label for="check-issuer-country">Country <span class="required">*</span></label>
+                                    <input type="text" id="check-issuer-country" required placeholder="DE" maxlength="2" style="text-transform: uppercase;">
+                                    <span class="field-hint">ISO code</span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="check-amount">Amount</label>
+                                    <input type="number" id="check-amount" step="0.01" placeholder="10000.00">
+                                    <span class="field-hint">Gross total with decimal point</span>
+                                </div>
+                                <div class="form-group form-group-small">
+                                    <label for="check-currency">Currency</label>
+                                    <input type="text" id="check-currency" placeholder="EUR" maxlength="3" style="text-transform: uppercase;">
+                                    <span class="field-hint">ISO code</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="check-invoice-date">Invoice Date</label>
+                                <input type="date" id="check-invoice-date">
+                                <span class="field-hint">Date as printed on the invoice</span>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="check-buyer-tax-id">Buyer Tax ID</label>
+                                    <input type="text" id="check-buyer-tax-id" placeholder="987654321">
+                                    <span class="field-hint">Numbers only, no country prefix</span>
+                                </div>
+                                <div class="form-group form-group-small">
+                                    <label for="check-buyer-country">Country</label>
+                                    <input type="text" id="check-buyer-country" placeholder="AT" maxlength="2" style="text-transform: uppercase;">
+                                    <span class="field-hint">ISO code</span>
+                                </div>
+                            </div>
+                            <div class="hash-level-info">
+                                <span class="level-indicator">L1</span> Required fields generate minimum check
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Check Invoice</button>
+                        </form>
+                        <div id="check-result" class="result-box"></div>
+                    </div>
+
+                    <!-- Register Invoice Card -->
+                    <div class="card">
+                        <h3>Register Invoice</h3>
+                        <p class="text-muted">Register an invoice as funded</p>
+                        <form id="register-invoice-form" onsubmit="registerInvoice(event)">
+                            <div class="form-group">
+                                <label for="reg-invoice-number">Invoice Number <span class="required">*</span></label>
+                                <input type="text" id="reg-invoice-number" required placeholder="INV-2024-001">
+                                <span class="field-hint">Exactly as printed, including hyphens and prefixes</span>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="reg-issuer-tax-id">Issuer Tax ID <span class="required">*</span></label>
+                                    <input type="text" id="reg-issuer-tax-id" required placeholder="123456789">
+                                    <span class="field-hint">Numbers only, no country prefix</span>
+                                </div>
+                                <div class="form-group form-group-small">
+                                    <label for="reg-issuer-country">Country <span class="required">*</span></label>
+                                    <input type="text" id="reg-issuer-country" required placeholder="DE" maxlength="2" style="text-transform: uppercase;">
+                                    <span class="field-hint">ISO code</span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="reg-amount">Amount</label>
+                                    <input type="number" id="reg-amount" step="0.01" placeholder="10000.00">
+                                    <span class="field-hint">Gross total with decimal point</span>
+                                </div>
+                                <div class="form-group form-group-small">
+                                    <label for="reg-currency">Currency</label>
+                                    <input type="text" id="reg-currency" placeholder="EUR" maxlength="3" style="text-transform: uppercase;">
+                                    <span class="field-hint">ISO code</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="reg-invoice-date">Invoice Date</label>
+                                <input type="date" id="reg-invoice-date">
+                                <span class="field-hint">Date as printed on the invoice</span>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="reg-buyer-tax-id">Buyer Tax ID</label>
+                                    <input type="text" id="reg-buyer-tax-id" placeholder="987654321">
+                                    <span class="field-hint">Numbers only, no country prefix</span>
+                                </div>
+                                <div class="form-group form-group-small">
+                                    <label for="reg-buyer-country">Country</label>
+                                    <input type="text" id="reg-buyer-country" placeholder="AT" maxlength="2" style="text-transform: uppercase;">
+                                    <span class="field-hint">ISO code</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="reg-expires">Expires In (days)</label>
+                                <input type="number" id="reg-expires" placeholder="730" value="730">
+                                <span class="field-hint">How long before registration auto-expires (default: 2 years)</span>
+                            </div>
+                            <div class="hash-level-info">
+                                <span class="level-indicator">L1-L4</span> More fields = more hash levels registered
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Register Invoice</button>
+                        </form>
+                        <div id="register-result" class="result-box"></div>
                     </div>
                 </div>
             </section>
@@ -117,12 +258,12 @@
                     <p class="text-muted">Use this key in the X-API-Key header</p>
                     <div class="api-key-display">
                         <code id="current-api-key">Loading...</code>
-                        <button class="btn btn-outline" onclick="copyApiKey()">Copy</button>
+                        <button class="btn btn-ghost" onclick="copyApiKey()">Copy</button>
                     </div>
                     <button class="btn btn-danger" onclick="regenerateApiKey()">
                         Regenerate API Key
                     </button>
-                    <p class="warning-text">⚠️ Regenerating will invalidate your current key immediately.</p>
+                    <p class="warning-text">Regenerating will invalidate your current key immediately.</p>
                 </div>
 
                 <div class="card">
@@ -133,7 +274,7 @@
                             <label>Client ID</label>
                             <code id="oauth-client-id-display">Available at signup only</code>
                         </div>
-                        <p class="info-text">ℹ️ OAuth credentials are only shown during account creation. Contact support if you need new OAuth credentials.</p>
+                        <p class="info-text">OAuth credentials are only shown during account creation. Contact support if you need new OAuth credentials.</p>
                     </div>
                 </div>
             </section>
@@ -204,24 +345,24 @@
 
                 <div class="docs-grid">
                     <div class="card">
-                        <h3>🚀 Quick Start</h3>
+                        <h3>Quick Start</h3>
                         <p>Get up and running in minutes with our step-by-step guide.</p>
-                        <a href="https://github.com/janovincze/RegStrava#quick-start" target="_blank" class="btn btn-outline">View Guide</a>
+                        <a href="https://github.com/janovincze/RegStrava#quick-start" target="_blank" class="btn btn-ghost">View Guide</a>
                     </div>
                     <div class="card">
-                        <h3>📡 API Reference</h3>
+                        <h3>API Reference</h3>
                         <p>Complete API documentation with examples.</p>
-                        <a href="https://github.com/janovincze/RegStrava#api-usage" target="_blank" class="btn btn-outline">View Docs</a>
+                        <a href="https://github.com/janovincze/RegStrava#api-usage" target="_blank" class="btn btn-ghost">View Docs</a>
                     </div>
                     <div class="card">
-                        <h3>📦 Go SDK</h3>
+                        <h3>Go SDK</h3>
                         <p>Official Go SDK for client-side hashing.</p>
-                        <a href="https://github.com/janovincze/RegStrava#go-sdk" target="_blank" class="btn btn-outline">View SDK</a>
+                        <a href="https://github.com/janovincze/RegStrava#go-sdk" target="_blank" class="btn btn-ghost">View SDK</a>
                     </div>
                     <div class="card">
-                        <h3>🔒 Security</h3>
+                        <h3>Security</h3>
                         <p>Learn about our privacy-preserving approach.</p>
-                        <a href="https://github.com/janovincze/RegStrava#security" target="_blank" class="btn btn-outline">Learn More</a>
+                        <a href="https://github.com/janovincze/RegStrava#security" target="_blank" class="btn btn-ghost">Learn More</a>
                     </div>
                 </div>
             </section>
@@ -367,6 +508,142 @@
                 });
             } catch (error) {
                 alert('Error updating tracking settings');
+            }
+        }
+
+        // Check Invoice
+        async function checkInvoice(e) {
+            e.preventDefault();
+            const apiKey = localStorage.getItem('regstrava_api_key');
+            const resultDiv = document.getElementById('check-result');
+
+            const data = {
+                invoice_number: document.getElementById('check-invoice-number').value,
+                issuer_tax_id: document.getElementById('check-issuer-tax-id').value,
+                issuer_country: document.getElementById('check-issuer-country').value.toUpperCase()
+            };
+
+            const amount = document.getElementById('check-amount').value;
+            if (amount) data.amount = parseFloat(amount);
+
+            const currency = document.getElementById('check-currency').value;
+            if (currency) data.currency = currency.toUpperCase();
+
+            const invoiceDate = document.getElementById('check-invoice-date').value;
+            if (invoiceDate) data.invoice_date = invoiceDate;
+
+            const buyerTaxId = document.getElementById('check-buyer-tax-id').value;
+            if (buyerTaxId) {
+                data.buyer_tax_id = buyerTaxId;
+                const buyerCountry = document.getElementById('check-buyer-country').value;
+                if (buyerCountry) data.buyer_country = buyerCountry.toUpperCase();
+            }
+
+            resultDiv.innerHTML = '<div class="loading">Checking...</div>';
+
+            try {
+                const response = await fetch('/api/v1/invoices/check-raw', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-Key': apiKey
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    if (result.funded) {
+                        resultDiv.innerHTML = `
+                            <div class="result-funded">
+                                <div class="result-icon">&#10007;</div>
+                                <div class="result-title">Already Funded</div>
+                                <div class="result-detail">
+                                    <span class="label">Match Level:</span> L${result.matched_level}<br>
+                                    <span class="label">Funded At:</span> ${new Date(result.funded_at).toLocaleDateString()}
+                                </div>
+                            </div>`;
+                    } else {
+                        resultDiv.innerHTML = `
+                            <div class="result-clear">
+                                <div class="result-icon">&#10003;</div>
+                                <div class="result-title">Not Funded</div>
+                                <div class="result-detail">This invoice is not in the registry. Safe to fund.</div>
+                            </div>`;
+                    }
+                } else {
+                    resultDiv.innerHTML = `<div class="result-error">Error: ${result.error || 'Unknown error'}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result-error">Error: ${error.message}</div>`;
+            }
+        }
+
+        // Register Invoice
+        async function registerInvoice(e) {
+            e.preventDefault();
+            const apiKey = localStorage.getItem('regstrava_api_key');
+            const resultDiv = document.getElementById('register-result');
+
+            const data = {
+                invoice_number: document.getElementById('reg-invoice-number').value,
+                issuer_tax_id: document.getElementById('reg-issuer-tax-id').value,
+                issuer_country: document.getElementById('reg-issuer-country').value.toUpperCase(),
+                funding_date: new Date().toISOString().split('T')[0]
+            };
+
+            const amount = document.getElementById('reg-amount').value;
+            if (amount) data.amount = parseFloat(amount);
+
+            const currency = document.getElementById('reg-currency').value;
+            if (currency) data.currency = currency.toUpperCase();
+
+            const invoiceDate = document.getElementById('reg-invoice-date').value;
+            if (invoiceDate) data.invoice_date = invoiceDate;
+
+            const buyerTaxId = document.getElementById('reg-buyer-tax-id').value;
+            if (buyerTaxId) {
+                data.buyer_tax_id = buyerTaxId;
+                const buyerCountry = document.getElementById('reg-buyer-country').value;
+                if (buyerCountry) data.buyer_country = buyerCountry.toUpperCase();
+            }
+
+            const expires = document.getElementById('reg-expires').value;
+            if (expires) data.expires_in_days = parseInt(expires);
+
+            resultDiv.innerHTML = '<div class="loading">Registering...</div>';
+
+            try {
+                const response = await fetch('/api/v1/invoices/register-raw', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-Key': apiKey
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="result-success">
+                            <div class="result-icon">&#10003;</div>
+                            <div class="result-title">Invoice Registered</div>
+                            <div class="result-detail">
+                                <span class="label">Hash Level:</span> L${result.registered_level}<br>
+                                <span class="label">Expires:</span> ${result.expires_at ? new Date(result.expires_at).toLocaleDateString() : 'Never'}
+                            </div>
+                        </div>`;
+                    // Clear form
+                    document.getElementById('register-invoice-form').reset();
+                    document.getElementById('reg-expires').value = '730';
+                } else {
+                    resultDiv.innerHTML = `<div class="result-error">Error: ${result.error || 'Unknown error'}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result-error">Error: ${error.message}</div>`;
             }
         }
     </script>

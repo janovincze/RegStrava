@@ -48,6 +48,11 @@ func (s *HashService) NormalizeCurrency(currency string) string {
 	return strings.ToUpper(strings.TrimSpace(currency))
 }
 
+// NormalizeCountry normalizes a country code: ISO 3166-1 alpha-2 uppercase
+func (s *HashService) NormalizeCountry(country string) string {
+	return strings.ToUpper(strings.TrimSpace(country))
+}
+
 // NormalizeDate normalizes a date to ISO 8601 format (YYYY-MM-DD)
 // Assumes input is already in YYYY-MM-DD format
 func (s *HashService) NormalizeDate(date string) string {
@@ -67,9 +72,10 @@ func (s *HashService) GenerateHashes(req *domain.InvoiceCheckRawRequest) []strin
 
 	invoiceNumber := s.NormalizeInvoiceNumber(req.InvoiceNumber)
 	issuerTaxID := s.NormalizeTaxID(req.IssuerTaxID)
+	issuerCountry := s.NormalizeCountry(req.IssuerCountry)
 
-	// L1: Basic - invoice_number + issuer_tax_id
-	l1Data := fmt.Sprintf("%s|%s", invoiceNumber, issuerTaxID)
+	// L1: Basic - invoice_number + issuer_tax_id + issuer_country
+	l1Data := fmt.Sprintf("%s|%s|%s", invoiceNumber, issuerTaxID, issuerCountry)
 	hashes = append(hashes, s.Hash(l1Data))
 
 	// L2: Standard - L1 + amount + currency
@@ -85,10 +91,11 @@ func (s *HashService) GenerateHashes(req *domain.InvoiceCheckRawRequest) []strin
 			l3Data := fmt.Sprintf("%s|%s", l2Data, invoiceDate)
 			hashes = append(hashes, s.Hash(l3Data))
 
-			// L4: Full - L3 + buyer_tax_id
-			if req.BuyerTaxID != "" {
+			// L4: Full - L3 + buyer_tax_id + buyer_country
+			if req.BuyerTaxID != "" && req.BuyerCountry != "" {
 				buyerTaxID := s.NormalizeTaxID(req.BuyerTaxID)
-				l4Data := fmt.Sprintf("%s|%s", l3Data, buyerTaxID)
+				buyerCountry := s.NormalizeCountry(req.BuyerCountry)
+				l4Data := fmt.Sprintf("%s|%s|%s", l3Data, buyerTaxID, buyerCountry)
 				hashes = append(hashes, s.Hash(l4Data))
 			}
 		}
@@ -102,10 +109,12 @@ func (s *HashService) GenerateHashesForRegister(req *domain.InvoiceRegisterRawRe
 	checkReq := &domain.InvoiceCheckRawRequest{
 		InvoiceNumber: req.InvoiceNumber,
 		IssuerTaxID:   req.IssuerTaxID,
+		IssuerCountry: req.IssuerCountry,
 		Amount:        req.Amount,
 		Currency:      req.Currency,
 		InvoiceDate:   req.InvoiceDate,
 		BuyerTaxID:    req.BuyerTaxID,
+		BuyerCountry:  req.BuyerCountry,
 	}
 	return s.GenerateHashes(checkReq)
 }
