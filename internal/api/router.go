@@ -1,6 +1,7 @@
 package api
 
 import (
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -79,7 +80,13 @@ func NewRouter(
 
 	// Serve static files for the landing page
 	staticDir := getStaticDir()
-	fileServer(r, "/", http.Dir(staticDir))
+	staticHandler := newStaticHandler(staticDir)
+
+	// Serve specific static routes
+	r.Get("/", staticHandler.serveIndex)
+	r.Get("/dashboard.html", staticHandler.serveFile)
+	r.Get("/css/*", staticHandler.serveFile)
+	r.Get("/js/*", staticHandler.serveFile)
 
 	return r
 }
@@ -95,38 +102,72 @@ func getStaticDir() string {
 	return "./web/static"
 }
 
-// fileServer conveniently sets up a http.FileServer handler to serve static files
-func fileServer(r chi.Router, path string, root http.FileSystem) {
-	if strings.ContainsAny(path, "{}*") {
-		panic("FileServer does not permit any URL parameters.")
+// staticHandler serves static files
+type staticHandler struct {
+	dir string
+}
+
+func newStaticHandler(dir string) *staticHandler {
+	return &staticHandler{dir: dir}
+}
+
+func (h *staticHandler) serveIndex(w http.ResponseWriter, r *http.Request) {
+	h.serveStaticFile(w, r, "index.html")
+}
+
+func (h *staticHandler) serveFile(w http.ResponseWriter, r *http.Request) {
+	// Get the path after the base
+	filePath := strings.TrimPrefix(r.URL.Path, "/")
+	h.serveStaticFile(w, r, filePath)
+}
+
+func (h *staticHandler) serveStaticFile(w http.ResponseWriter, r *http.Request, filePath string) {
+	// Clean and join paths
+	cleanPath := filepath.Clean(filePath)
+
+	// Security: prevent path traversal
+	if strings.Contains(cleanPath, "..") {
+		http.NotFound(w, r)
+		return
 	}
 
-	if path != "/" && path[len(path)-1] != '/' {
-		r.Get(path, http.RedirectHandler(path+"/", http.StatusMovedPermanently).ServeHTTP)
-		path += "/"
+	fullPath := filepath.Join(h.dir, cleanPath)
+
+	file, err := os.Open(fullPath)
+	if err != nil {
+		http.NotFound(w, r)
+		return
 	}
-	path += "*"
+	defer file.Close()
 
-	r.Get(path, func(w http.ResponseWriter, r *http.Request) {
-		rctx := chi.RouteContext(r.Context())
-		pathPrefix := strings.TrimSuffix(rctx.RoutePattern(), "/*")
-		fs := http.StripPrefix(pathPrefix, http.FileServer(root))
+	// Get file info for content type
+	stat, err := file.Stat()
+	if err != nil || stat.IsDir() {
+		http.NotFound(w, r)
+		return
+	}
 
-		// Try to serve the file
-		filePath := strings.TrimPrefix(r.URL.Path, pathPrefix)
-		if filePath == "" || filePath == "/" {
-			filePath = "/index.html"
-		}
+	// Set content type based on extension
+	ext := filepath.Ext(filePath)
+	switch ext {
+	case ".html":
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	case ".css":
+		w.Header().Set("Content-Type", "text/css; charset=utf-8")
+	case ".js":
+		w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
+	case ".json":
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	case ".png":
+		w.Header().Set("Content-Type", "image/png")
+	case ".jpg", ".jpeg":
+		w.Header().Set("Content-Type", "image/jpeg")
+	case ".svg":
+		w.Header().Set("Content-Type", "image/svg+xml")
+	case ".ico":
+		w.Header().Set("Content-Type", "image/x-icon")
+	}
 
-		// Check if file exists
-		f, err := root.Open(filepath.Clean(filePath))
-		if err != nil {
-			// If file doesn't exist, serve index.html (for SPA routing)
-			r.URL.Path = pathPrefix + "/index.html"
-		} else {
-			f.Close()
-		}
-
-		fs.ServeHTTP(w, r)
-	})
+	// Serve the file
+	io.Copy(w, file)
 }

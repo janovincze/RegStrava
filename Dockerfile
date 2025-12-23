@@ -24,14 +24,18 @@ WORKDIR /app
 # Install CA certificates for HTTPS
 RUN apk --no-cache add ca-certificates tzdata
 
-# Copy binary from builder
-COPY --from=builder /app/regstrava .
-
-# Copy static files
-COPY --from=builder /app/web/static ./web/static
-
-# Create non-root user
+# Create non-root user first
 RUN adduser -D -g '' appuser
+
+# Copy binary from builder
+COPY --from=builder --chown=appuser:appuser /app/regstrava .
+
+# Copy static files with proper permissions
+COPY --from=builder --chown=appuser:appuser /app/web/static ./web/static
+
+# Ensure static files are readable
+RUN chmod -R 755 ./web/static
+
 USER appuser
 
 # Expose port
