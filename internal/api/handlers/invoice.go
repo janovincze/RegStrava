@@ -62,9 +62,9 @@ func (h *InvoiceHandler) CheckRaw(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Validate required fields (support both new and deprecated field names)
-	documentID := req.DocumentID
-	if documentID == "" {
-		documentID = req.InvoiceNumber // Backward compatibility
+	// Map deprecated field names to new fields in the request struct
+	if req.DocumentID == "" && req.InvoiceNumber != "" {
+		req.DocumentID = req.InvoiceNumber // Backward compatibility
 	}
 	supplierTaxID := req.SupplierTaxID
 	if supplierTaxID == "" {
