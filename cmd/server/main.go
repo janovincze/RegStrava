@@ -44,11 +44,16 @@ func main() {
 	// Initialize document type repository (uses shared db)
 	docTypeRepo := repository.NewDocumentTypeRepository(db)
 
+	// Initialize subscription and usage repositories (uses shared db)
+	subscriptionRepo := repository.NewSubscriptionRepository(db)
+	usageRepo := repository.NewUsageRepository(db)
+
 	// Initialize services
 	hashService := service.NewHashService(cfg.HMACKey)
 	authService := service.NewAuthService(funderRepo, cfg.JWTSecret)
 	invoiceService := service.NewInvoiceService(invoiceRepo, partyRepo, hashService)
 	partyService := service.NewPartyService(partyRepo, hashService)
+	usageService := service.NewUsageService(usageRepo, subscriptionRepo)
 	rateLimitService, err := service.NewRateLimitService(cfg.RedisURL)
 	if err != nil {
 		log.Fatalf("Failed to connect to Redis: %v", err)
@@ -61,8 +66,10 @@ func main() {
 		authService,
 		hashService,
 		rateLimitService,
+		usageService,
 		funderRepo,
 		docTypeRepo,
+		subscriptionRepo,
 	)
 
 	// Create server

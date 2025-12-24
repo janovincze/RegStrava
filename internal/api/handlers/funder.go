@@ -94,17 +94,22 @@ func (h *FunderHandler) Register(w http.ResponseWriter, r *http.Request) {
 	// Create funder
 	funderID := uuid.New()
 	oauthSecretHashStr := string(oauthSecretHash)
+	now := time.Now()
 	funder := &domain.Funder{
-		ID:               funderID,
-		Name:             req.Name,
-		APIKeyHash:       string(apiKeyHash),
-		OAuthClientID:    &oauthClientID,
-		OAuthSecretHash:  &oauthSecretHashStr,
-		TrackFundings:    req.TrackFundings,
-		RateLimitDaily:   1000,
-		RateLimitMonthly: 20000,
-		CreatedAt:        time.Now(),
-		IsActive:         true,
+		ID:                    funderID,
+		Name:                  req.Name,
+		Email:                 &req.Email,
+		Company:               &req.Company,
+		APIKeyHash:            string(apiKeyHash),
+		OAuthClientID:         &oauthClientID,
+		OAuthSecretHash:       &oauthSecretHashStr,
+		TrackFundings:         req.TrackFundings,
+		RateLimitDaily:        1000,
+		RateLimitMonthly:      20000,
+		SubscriptionStatus:    domain.SubscriptionStatusActive,
+		SubscriptionStartedAt: &now,
+		CreatedAt:             now,
+		IsActive:              true,
 	}
 
 	if err := h.funderRepo.Create(r.Context(), funder); err != nil {
