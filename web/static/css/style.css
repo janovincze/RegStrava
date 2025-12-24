@@ -484,6 +484,10 @@ a:hover {
     align-items: start;
 }
 
+.pricing-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
 .pricing-card {
     position: relative;
     padding: var(--space-xl) var(--space-lg);
@@ -1022,6 +1026,11 @@ a:hover {
     text-align: center;
 }
 
+.level-badge.l0 {
+    background: rgba(174, 132, 102, 0.25);
+    color: #D6C8B5;
+}
+
 .level-badge.l1 {
     background: rgba(102, 110, 82, 0.3);
     color: #D6C8B5;
@@ -1103,12 +1112,92 @@ a:hover {
     }
 }
 
+/* Mobile Menu Button */
+.mobile-menu-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.mobile-menu-btn span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--foreground);
+    transition: all var(--transition-fast);
+}
+
+.mobile-menu-btn.active span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.mobile-menu-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-btn.active span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile Menu Overlay */
+.mobile-menu {
+    display: none;
+    position: fixed;
+    top: 72px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--background);
+    z-index: 999;
+    padding: var(--space-lg);
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.mobile-menu.active {
+    display: flex;
+}
+
+.mobile-menu a {
+    display: block;
+    padding: var(--space-md);
+    color: var(--foreground);
+    text-decoration: none;
+    font-size: 1.125rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.mobile-menu a:hover {
+    background: var(--background-secondary);
+}
+
+.mobile-menu .btn {
+    margin-top: var(--space-md);
+}
+
+@media (max-width: 1200px) {
+    .pricing-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
     h1 { font-size: 2.25rem; }
     h2 { font-size: 1.75rem; }
 
     .nav-links {
         display: none;
+    }
+
+    .mobile-menu-btn {
+        display: flex;
     }
 
     .hero {
