@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
+
 	"github.com/regstrava/regstrava/internal/domain"
 )
 

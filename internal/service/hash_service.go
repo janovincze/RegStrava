@@ -152,11 +152,11 @@ func (s *HashService) GenerateHashesForRegister(req *domain.InvoiceRegisterRawRe
 func (s *HashService) DetermineHashLevel(index int) domain.HashLevel {
 	switch index {
 	case 0:
-		return domain.HashLevelDocType  // L1
+		return domain.HashLevelDocType // L1
 	case 1:
 		return domain.HashLevelDocument // L2
 	case 2:
-		return domain.HashLevelFull     // L3
+		return domain.HashLevelFull // L3
 	default:
 		return domain.HashLevelDocType
 	}

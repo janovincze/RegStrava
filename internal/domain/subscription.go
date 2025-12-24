@@ -12,32 +12,32 @@ type SubscriptionStatus string
 const (
 	SubscriptionStatusActive    SubscriptionStatus = "active"
 	SubscriptionStatusTrial     SubscriptionStatus = "trial"
-	SubscriptionStatusCancelled SubscriptionStatus = "cancelled"
+	SubscriptionStatusCanceled  SubscriptionStatus = "canceled"
 	SubscriptionStatusExpired   SubscriptionStatus = "expired"
 	SubscriptionStatusSuspended SubscriptionStatus = "suspended"
 )
 
 // SubscriptionTier represents a subscription tier with its limits
 type SubscriptionTier struct {
-	ID                   uuid.UUID  `json:"id"`
-	Name                 string     `json:"name"`
-	DisplayName          string     `json:"display_name"`
-	Description          string     `json:"description,omitempty"`
-	CheckLimitDaily      *int       `json:"check_limit_daily,omitempty"`
-	CheckLimitMonthly    *int       `json:"check_limit_monthly,omitempty"`
-	RegisterLimitDaily   *int       `json:"register_limit_daily,omitempty"`
-	RegisterLimitMonthly *int       `json:"register_limit_monthly,omitempty"`
-	NotificationEmail    bool       `json:"notification_email"`
-	NotificationWebhook  bool       `json:"notification_webhook"`
-	NotificationPriority bool       `json:"notification_priority"`
-	PartyQueryLimitDaily *int       `json:"party_query_limit_daily,omitempty"`
-	PartyLookbackDays    int        `json:"party_lookback_days"`
-	PriceMonthlyCents    int        `json:"price_monthly_cents"`
-	PriceYearlyCents     int        `json:"price_yearly_cents"`
-	DisplayOrder         int        `json:"display_order"`
-	IsActive             bool       `json:"is_active"`
-	CreatedAt            time.Time  `json:"created_at"`
-	UpdatedAt            time.Time  `json:"updated_at"`
+	ID                   uuid.UUID `json:"id"`
+	Name                 string    `json:"name"`
+	DisplayName          string    `json:"display_name"`
+	Description          string    `json:"description,omitempty"`
+	CheckLimitDaily      *int      `json:"check_limit_daily,omitempty"`
+	CheckLimitMonthly    *int      `json:"check_limit_monthly,omitempty"`
+	RegisterLimitDaily   *int      `json:"register_limit_daily,omitempty"`
+	RegisterLimitMonthly *int      `json:"register_limit_monthly,omitempty"`
+	NotificationEmail    bool      `json:"notification_email"`
+	NotificationWebhook  bool      `json:"notification_webhook"`
+	NotificationPriority bool      `json:"notification_priority"`
+	PartyQueryLimitDaily *int      `json:"party_query_limit_daily,omitempty"`
+	PartyLookbackDays    int       `json:"party_lookback_days"`
+	PriceMonthlyCents    int       `json:"price_monthly_cents"`
+	PriceYearlyCents     int       `json:"price_yearly_cents"`
+	DisplayOrder         int       `json:"display_order"`
+	IsActive             bool      `json:"is_active"`
+	CreatedAt            time.Time `json:"created_at"`
+	UpdatedAt            time.Time `json:"updated_at"`
 }
 
 // IsUnlimited checks if a limit is unlimited (nil)
@@ -114,8 +114,8 @@ type SubscriptionUpgradeRequest struct {
 
 // SubscriptionUpgradeResponse is the response for upgrade request
 type SubscriptionUpgradeResponse struct {
-	Success     bool               `json:"success"`
-	Message     string             `json:"message"`
-	NewTier     *SubscriptionTier  `json:"new_tier,omitempty"`
-	UpgradeURL  string             `json:"upgrade_url,omitempty"`
+	Success    bool              `json:"success"`
+	Message    string            `json:"message"`
+	NewTier    *SubscriptionTier `json:"new_tier,omitempty"`
+	UpgradeURL string            `json:"upgrade_url,omitempty"`
 }

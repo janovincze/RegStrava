@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+
 	"github.com/regstrava/regstrava/internal/domain"
 	"github.com/regstrava/regstrava/internal/service"
 )
@@ -14,8 +15,8 @@ import (
 type contextKey string
 
 const (
-	FunderIDKey   contextKey = "funder_id"
-	FunderKey     contextKey = "funder"
+	FunderIDKey contextKey = "funder_id"
+	FunderKey   contextKey = "funder"
 )
 
 // AuthMiddleware provides authentication middleware

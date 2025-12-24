@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/go-chi/chi/v5"
+
 	"github.com/regstrava/regstrava/internal/api/handlers"
 	"github.com/regstrava/regstrava/internal/api/middleware"
 	"github.com/regstrava/regstrava/internal/repository"
