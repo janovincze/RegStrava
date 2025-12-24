@@ -21,8 +21,10 @@ func NewRouter(
 	authService *service.AuthService,
 	hashService *service.HashService,
 	rateLimitService *service.RateLimitService,
+	usageService *service.UsageService,
 	funderRepo *repository.FunderRepository,
 	docTypeRepo *repository.DocumentTypeRepository,
+	subscriptionRepo *repository.SubscriptionRepository,
 ) http.Handler {
 	r := chi.NewRouter()
 
@@ -42,21 +44,25 @@ func NewRouter(
 	authHandler := handlers.NewAuthHandler(authService)
 	funderHandler := handlers.NewFunderHandler(funderRepo)
 	docTypeHandler := handlers.NewDocumentTypeHandler(docTypeRepo)
+	subscriptionHandler := handlers.NewSubscriptionHandler(subscriptionRepo, usageService)
 
 	// Create middleware
 	authMiddleware := middleware.NewAuthMiddleware(authService)
 	rateLimitMiddleware := middleware.NewRateLimitMiddleware(rateLimitService, funderRepo)
+	quotaMiddleware := middleware.NewQuotaMiddleware(usageService)
 
 	// API v1 routes
 	r.Route("/api/v1", func(r chi.Router) {
 		// Public endpoints (no auth required)
 		r.Post("/oauth/token", authHandler.Token)
 		r.Post("/funders/register", funderHandler.Register)
+		r.Get("/subscription-tiers", subscriptionHandler.ListTiers)
 
 		// Protected routes
 		r.Group(func(r chi.Router) {
 			r.Use(authMiddleware.Authenticate)
 			r.Use(rateLimitMiddleware.RateLimit)
+			r.Use(quotaMiddleware.EnforceQuota)
 
 			// Invoice endpoints
 			r.Route("/invoices", func(r chi.Router) {
@@ -77,7 +83,10 @@ func NewRouter(
 				r.Get("/me", funderHandler.GetProfile)
 				r.Patch("/me", funderHandler.UpdateProfile)
 				r.Post("/me/regenerate-api-key", funderHandler.RegenerateAPIKey)
-				r.Get("/me/usage", funderHandler.GetUsageStats)
+				r.Get("/me/usage", subscriptionHandler.GetUsage)
+				r.Get("/me/usage/history", subscriptionHandler.GetUsageHistory)
+				r.Get("/me/subscription", subscriptionHandler.GetSubscription)
+				r.Post("/me/subscription/upgrade", subscriptionHandler.RequestUpgrade)
 			})
 
 			// Party endpoints (L0 - party level checks)

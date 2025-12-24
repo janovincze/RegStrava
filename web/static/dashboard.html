@@ -39,8 +39,11 @@
                 <a href="#docs" class="sidebar-link" onclick="showSection('docs')">
                     <span>V</span> Documentation
                 </a>
+                <a href="#subscription" class="sidebar-link" onclick="showSection('subscription')">
+                    <span>VI</span> Subscription
+                </a>
                 <a href="#settings" class="sidebar-link" onclick="showSection('settings')">
-                    <span>VI</span> Settings
+                    <span>VII</span> Settings
                 </a>
             </nav>
         </aside>
@@ -57,31 +60,79 @@
                     <div class="stat-card">
                         <div class="stat-icon">01</div>
                         <div class="stat-info">
-                            <span class="stat-value" id="daily-limit">1,000</span>
-                            <span class="stat-label">Daily Limit</span>
+                            <span class="stat-value" id="subscription-tier">Free</span>
+                            <span class="stat-label">Subscription Tier</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">02</div>
                         <div class="stat-info">
-                            <span class="stat-value" id="monthly-limit">20,000</span>
-                            <span class="stat-label">Monthly Limit</span>
+                            <span class="stat-value" id="monthly-checks-used">0</span>
+                            <span class="stat-label">Monthly Checks Used</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">03</div>
                         <div class="stat-info">
-                            <span class="stat-value" id="tracking-status">Enabled</span>
-                            <span class="stat-label">Funder Tracking</span>
+                            <span class="stat-value" id="monthly-registers-used">0</span>
+                            <span class="stat-label">Monthly Registers Used</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">04</div>
                         <div class="stat-info">
-                            <span class="stat-value">Active</span>
+                            <span class="stat-value" id="account-status">Active</span>
                             <span class="stat-label">Account Status</span>
                         </div>
                     </div>
+                </div>
+
+                <!-- Usage Progress Bars -->
+                <div class="usage-section" id="usage-section">
+                    <h2>Current Usage</h2>
+                    <div id="usage-warning" class="usage-warning" style="display: none;"></div>
+                    <div class="usage-grid">
+                        <div class="usage-card">
+                            <div class="usage-header">
+                                <span>Daily Checks</span>
+                                <span id="daily-check-text">0 / 10</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="daily-check-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="usage-card">
+                            <div class="usage-header">
+                                <span>Daily Registers</span>
+                                <span id="daily-register-text">0 / 2</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="daily-register-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="usage-card">
+                            <div class="usage-header">
+                                <span>Monthly Checks</span>
+                                <span id="monthly-check-text">0 / 100</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="monthly-check-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="usage-card">
+                            <div class="usage-header">
+                                <span>Monthly Registers</span>
+                                <span id="monthly-register-text">0 / 10</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="monthly-register-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="usage-reset-info">
+                        Daily resets at: <span id="daily-reset-time">midnight UTC</span> |
+                        Monthly resets at: <span id="monthly-reset-time">1st of next month</span>
+                    </p>
                 </div>
 
                 <div class="quick-start">
@@ -413,6 +464,145 @@
                 </div>
             </section>
 
+            <!-- Subscription Section -->
+            <section id="section-subscription" class="dashboard-section">
+                <div class="section-header">
+                    <h1>Subscription</h1>
+                    <p>Manage your subscription and view usage</p>
+                </div>
+
+                <div class="card">
+                    <h3>Current Plan</h3>
+                    <div class="current-plan">
+                        <div class="plan-badge" id="plan-badge">Free</div>
+                        <div class="plan-details">
+                            <p id="plan-description">Get started with basic invoice checking</p>
+                            <p class="plan-price" id="plan-price">$0/month</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Available Plans</h3>
+                    <div class="plans-grid" id="plans-grid">
+                        <!-- Plans loaded dynamically -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Usage Details</h3>
+                    <div class="usage-details-grid">
+                        <div class="usage-detail">
+                            <h4>Daily Usage</h4>
+                            <table class="usage-table">
+                                <tr>
+                                    <td>Checks</td>
+                                    <td id="detail-daily-checks">0 / 10</td>
+                                </tr>
+                                <tr>
+                                    <td>Registers</td>
+                                    <td id="detail-daily-registers">0 / 2</td>
+                                </tr>
+                                <tr>
+                                    <td>Resets at</td>
+                                    <td id="detail-daily-reset">Midnight UTC</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="usage-detail">
+                            <h4>Monthly Usage</h4>
+                            <table class="usage-table">
+                                <tr>
+                                    <td>Checks</td>
+                                    <td id="detail-monthly-checks">0 / 100</td>
+                                </tr>
+                                <tr>
+                                    <td>Registers</td>
+                                    <td id="detail-monthly-registers">0 / 10</td>
+                                </tr>
+                                <tr>
+                                    <td>Resets at</td>
+                                    <td id="detail-monthly-reset">1st of next month</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Features by Plan</h3>
+                    <table class="features-table">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Free</th>
+                                <th>Basic</th>
+                                <th>Premium</th>
+                                <th>Enterprise</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Daily Checks</td>
+                                <td>10</td>
+                                <td>100</td>
+                                <td>500</td>
+                                <td>Unlimited</td>
+                            </tr>
+                            <tr>
+                                <td>Monthly Checks</td>
+                                <td>100</td>
+                                <td>1,000</td>
+                                <td>10,000</td>
+                                <td>Unlimited</td>
+                            </tr>
+                            <tr>
+                                <td>Daily Registers</td>
+                                <td>2</td>
+                                <td>20</td>
+                                <td>100</td>
+                                <td>Unlimited</td>
+                            </tr>
+                            <tr>
+                                <td>Monthly Registers</td>
+                                <td>10</td>
+                                <td>100</td>
+                                <td>1,000</td>
+                                <td>Unlimited</td>
+                            </tr>
+                            <tr>
+                                <td>Email Notifications</td>
+                                <td>-</td>
+                                <td>Yes</td>
+                                <td>Yes</td>
+                                <td>Yes</td>
+                            </tr>
+                            <tr>
+                                <td>Webhook Notifications</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>Yes</td>
+                                <td>Yes</td>
+                            </tr>
+                            <tr>
+                                <td>Priority Support</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>Yes</td>
+                            </tr>
+                            <tr>
+                                <td>Price</td>
+                                <td>$0</td>
+                                <td>$29/mo</td>
+                                <td>$99/mo</td>
+                                <td>Contact</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
             <!-- Settings Section -->
             <section id="section-settings" class="dashboard-section">
                 <div class="section-header">
@@ -481,7 +671,156 @@
 
             // Load dashboard data
             loadDashboard();
+
+            // Load usage data
+            loadUsageData();
+
+            // Load subscription tiers
+            loadSubscriptionTiers();
         });
+
+        // Load usage data
+        async function loadUsageData() {
+            const apiKey = localStorage.getItem('regstrava_api_key');
+            if (!apiKey) return;
+
+            try {
+                const response = await fetch('/api/v1/funders/me/usage', {
+                    headers: { 'X-API-Key': apiKey }
+                });
+
+                if (!response.ok) return;
+
+                const data = await response.json();
+                const usage = data.usage;
+                const subscription = data.subscription;
+
+                // Update subscription tier display
+                if (subscription && subscription.tier) {
+                    document.getElementById('subscription-tier').textContent = subscription.tier.display_name || 'Free';
+                    document.getElementById('plan-badge').textContent = subscription.tier.display_name || 'Free';
+                    document.getElementById('plan-description').textContent = subscription.tier.description || '';
+                    const price = subscription.tier.price_monthly_cents ? `$${subscription.tier.price_monthly_cents / 100}/month` : '$0/month';
+                    document.getElementById('plan-price').textContent = price;
+                }
+
+                // Update usage stats
+                document.getElementById('monthly-checks-used').textContent = usage.monthly_checks.toLocaleString();
+                document.getElementById('monthly-registers-used').textContent = usage.monthly_registers.toLocaleString();
+
+                // Update progress bars
+                updateProgressBar('daily-check', usage.daily_checks, usage.daily_check_limit);
+                updateProgressBar('daily-register', usage.daily_registers, usage.daily_register_limit);
+                updateProgressBar('monthly-check', usage.monthly_checks, usage.monthly_check_limit);
+                updateProgressBar('monthly-register', usage.monthly_registers, usage.monthly_register_limit);
+
+                // Update detail texts
+                document.getElementById('detail-daily-checks').textContent = formatUsage(usage.daily_checks, usage.daily_check_limit);
+                document.getElementById('detail-daily-registers').textContent = formatUsage(usage.daily_registers, usage.daily_register_limit);
+                document.getElementById('detail-monthly-checks').textContent = formatUsage(usage.monthly_checks, usage.monthly_check_limit);
+                document.getElementById('detail-monthly-registers').textContent = formatUsage(usage.monthly_registers, usage.monthly_register_limit);
+
+                // Update reset times
+                if (usage.daily_resets_at) {
+                    document.getElementById('daily-reset-time').textContent = new Date(usage.daily_resets_at).toLocaleTimeString();
+                    document.getElementById('detail-daily-reset').textContent = new Date(usage.daily_resets_at).toLocaleString();
+                }
+                if (usage.monthly_resets_at) {
+                    document.getElementById('monthly-reset-time').textContent = new Date(usage.monthly_resets_at).toLocaleDateString();
+                    document.getElementById('detail-monthly-reset').textContent = new Date(usage.monthly_resets_at).toLocaleDateString();
+                }
+
+                // Show warning if needed
+                if (data.warning_level) {
+                    const warningDiv = document.getElementById('usage-warning');
+                    warningDiv.style.display = 'block';
+                    warningDiv.className = 'usage-warning ' + (data.warning_level === 'critical' ? 'critical' : 'warning');
+                    warningDiv.textContent = data.warning_message;
+                }
+
+            } catch (error) {
+                console.error('Error loading usage data:', error);
+            }
+        }
+
+        function updateProgressBar(id, used, limit) {
+            const progress = document.getElementById(id + '-progress');
+            const text = document.getElementById(id + '-text');
+
+            if (!limit) {
+                // Unlimited
+                progress.style.width = '5%';
+                progress.classList.remove('warning', 'critical');
+                text.textContent = used + ' / Unlimited';
+                return;
+            }
+
+            const percent = Math.min((used / limit) * 100, 100);
+            progress.style.width = percent + '%';
+            text.textContent = used + ' / ' + limit;
+
+            // Color based on percentage
+            progress.classList.remove('warning', 'critical');
+            if (percent >= 90) {
+                progress.classList.add('critical');
+            } else if (percent >= 80) {
+                progress.classList.add('warning');
+            }
+        }
+
+        function formatUsage(used, limit) {
+            if (!limit) return used + ' / Unlimited';
+            return used + ' / ' + limit;
+        }
+
+        // Load subscription tiers
+        async function loadSubscriptionTiers() {
+            try {
+                const response = await fetch('/api/v1/subscription-tiers');
+                if (!response.ok) return;
+
+                const data = await response.json();
+                const plansGrid = document.getElementById('plans-grid');
+
+                if (data.tiers && data.tiers.length > 0) {
+                    plansGrid.innerHTML = data.tiers.map(tier => `
+                        <div class="plan-card ${tier.name}">
+                            <h4>${tier.display_name}</h4>
+                            <p class="plan-desc">${tier.description}</p>
+                            <p class="plan-price">${tier.price_monthly_cents ? '$' + (tier.price_monthly_cents / 100) + '/mo' : 'Free'}</p>
+                            <ul class="plan-features">
+                                <li>${tier.check_limit_monthly ? tier.check_limit_monthly + ' checks/mo' : 'Unlimited checks'}</li>
+                                <li>${tier.register_limit_monthly ? tier.register_limit_monthly + ' registers/mo' : 'Unlimited registers'}</li>
+                                ${tier.notification_email ? '<li>Email notifications</li>' : ''}
+                                ${tier.notification_webhook ? '<li>Webhook notifications</li>' : ''}
+                            </ul>
+                            ${tier.name !== 'free' ? '<button class="btn btn-primary btn-small" onclick="requestUpgrade(\'' + tier.name + '\')">Upgrade</button>' : ''}
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading subscription tiers:', error);
+            }
+        }
+
+        async function requestUpgrade(tierName) {
+            const apiKey = localStorage.getItem('regstrava_api_key');
+            try {
+                const response = await fetch('/api/v1/funders/me/subscription/upgrade', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-Key': apiKey
+                    },
+                    body: JSON.stringify({ tier_name: tierName })
+                });
+
+                const result = await response.json();
+                alert(result.message);
+            } catch (error) {
+                alert('Error requesting upgrade');
+            }
+        }
 
         function showSection(sectionId) {
             // Hide all sections

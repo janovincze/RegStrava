@@ -46,8 +46,11 @@ func (r *FunderRepository) GetDB() *sql.DB {
 // FindByID finds a funder by ID
 func (r *FunderRepository) FindByID(ctx context.Context, id uuid.UUID) (*domain.Funder, error) {
 	query := `
-		SELECT id, name, api_key_hash, oauth_client_id, oauth_secret_hash,
-		       track_fundings, rate_limit_daily, rate_limit_monthly, created_at, is_active
+		SELECT id, name, email, company, api_key_hash, oauth_client_id, oauth_secret_hash,
+		       track_fundings, rate_limit_daily, rate_limit_monthly,
+		       subscription_tier_name, subscription_status, subscription_started_at,
+		       subscription_expires_at, trial_ends_at, notification_consent,
+		       created_at, is_active
 		FROM funders
 		WHERE id = $1
 	`
@@ -56,12 +59,20 @@ func (r *FunderRepository) FindByID(ctx context.Context, id uuid.UUID) (*domain.
 	err := r.db.QueryRowContext(ctx, query, id).Scan(
 		&funder.ID,
 		&funder.Name,
+		&funder.Email,
+		&funder.Company,
 		&funder.APIKeyHash,
 		&funder.OAuthClientID,
 		&funder.OAuthSecretHash,
 		&funder.TrackFundings,
 		&funder.RateLimitDaily,
 		&funder.RateLimitMonthly,
+		&funder.SubscriptionTierName,
+		&funder.SubscriptionStatus,
+		&funder.SubscriptionStartedAt,
+		&funder.SubscriptionExpiresAt,
+		&funder.TrialEndsAt,
+		&funder.NotificationConsent,
 		&funder.CreatedAt,
 		&funder.IsActive,
 	)
@@ -79,8 +90,11 @@ func (r *FunderRepository) FindByID(ctx context.Context, id uuid.UUID) (*domain.
 // FindByOAuthClientID finds a funder by OAuth client ID
 func (r *FunderRepository) FindByOAuthClientID(ctx context.Context, clientID string) (*domain.Funder, error) {
 	query := `
-		SELECT id, name, api_key_hash, oauth_client_id, oauth_secret_hash,
-		       track_fundings, rate_limit_daily, rate_limit_monthly, created_at, is_active
+		SELECT id, name, email, company, api_key_hash, oauth_client_id, oauth_secret_hash,
+		       track_fundings, rate_limit_daily, rate_limit_monthly,
+		       subscription_tier_name, subscription_status, subscription_started_at,
+		       subscription_expires_at, trial_ends_at, notification_consent,
+		       created_at, is_active
 		FROM funders
 		WHERE oauth_client_id = $1
 	`
@@ -89,12 +103,20 @@ func (r *FunderRepository) FindByOAuthClientID(ctx context.Context, clientID str
 	err := r.db.QueryRowContext(ctx, query, clientID).Scan(
 		&funder.ID,
 		&funder.Name,
+		&funder.Email,
+		&funder.Company,
 		&funder.APIKeyHash,
 		&funder.OAuthClientID,
 		&funder.OAuthSecretHash,
 		&funder.TrackFundings,
 		&funder.RateLimitDaily,
 		&funder.RateLimitMonthly,
+		&funder.SubscriptionTierName,
+		&funder.SubscriptionStatus,
+		&funder.SubscriptionStartedAt,
+		&funder.SubscriptionExpiresAt,
+		&funder.TrialEndsAt,
+		&funder.NotificationConsent,
 		&funder.CreatedAt,
 		&funder.IsActive,
 	)
@@ -150,21 +172,35 @@ func (r *FunderRepository) FindAll(ctx context.Context) ([]*domain.Funder, error
 
 // Create creates a new funder
 func (r *FunderRepository) Create(ctx context.Context, funder *domain.Funder) error {
+	// Set default (free) tier if not set
+	if funder.SubscriptionTierName == nil {
+		defaultTier := "free"
+		funder.SubscriptionTierName = &defaultTier
+	}
+
 	query := `
-		INSERT INTO funders (id, name, api_key_hash, oauth_client_id, oauth_secret_hash,
-		                     track_fundings, rate_limit_daily, rate_limit_monthly, created_at, is_active)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+		INSERT INTO funders (id, name, email, company, api_key_hash, oauth_client_id, oauth_secret_hash,
+		                     track_fundings, rate_limit_daily, rate_limit_monthly,
+		                     subscription_tier_name, subscription_status, subscription_started_at,
+		                     notification_consent, created_at, is_active)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
 	`
 
 	_, err := r.db.ExecContext(ctx, query,
 		funder.ID,
 		funder.Name,
+		funder.Email,
+		funder.Company,
 		funder.APIKeyHash,
 		funder.OAuthClientID,
 		funder.OAuthSecretHash,
 		funder.TrackFundings,
 		funder.RateLimitDaily,
 		funder.RateLimitMonthly,
+		funder.SubscriptionTierName,
+		funder.SubscriptionStatus,
+		funder.SubscriptionStartedAt,
+		funder.NotificationConsent,
 		funder.CreatedAt,
 		funder.IsActive,
 	)
