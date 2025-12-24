@@ -17,11 +17,25 @@
                 <a href="#how-it-works" class="nav-item"><span class="nav-item__num">II</span> Process</a>
                 <a href="#data-rules" class="nav-item"><span class="nav-item__num">III</span> Rules</a>
                 <a href="#pricing" class="nav-item"><span class="nav-item__num">IV</span> Pricing</a>
-                <a href="/dashboard.html" class="btn btn-ghost">Dashboard</a>
+                <a href="/dashboard.html" class="btn btn-ghost">Sign In</a>
                 <a href="#signup" class="btn btn-primary">Get Started</a>
             </div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
+
+    <div id="mobile-menu" class="mobile-menu">
+        <a href="#features" onclick="closeMobileMenu()">Features</a>
+        <a href="#how-it-works" onclick="closeMobileMenu()">Process</a>
+        <a href="#data-rules" onclick="closeMobileMenu()">Rules</a>
+        <a href="#pricing" onclick="closeMobileMenu()">Pricing</a>
+        <a href="/dashboard.html" class="btn btn-ghost">Sign In</a>
+        <a href="#signup" class="btn btn-primary" onclick="closeMobileMenu()">Get Started</a>
+    </div>
 
     <header class="hero">
         <div class="container">
@@ -93,27 +107,37 @@
                 <div class="feature-card">
                     <div class="feature-icon">02</div>
                     <h3>Multi-Level Matching</h3>
-                    <p>4 hash levels accommodate varying data availability across funders.</p>
+                    <p>4 hash levels (L0-L3) from party-level to full invoice fingerprint for flexible matching.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">03</div>
-                    <h3>Real-Time Checks</h3>
-                    <p>Instant verification with sub-50ms response times.</p>
+                    <h3>Party-Level Checks</h3>
+                    <p>L0 hashing verifies suppliers and buyers separately, catching risky parties early.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">04</div>
-                    <h3>Simple Integration</h3>
-                    <p>REST API with API keys or OAuth 2.0. SDKs for major languages.</p>
+                    <h3>Real-Time Checks</h3>
+                    <p>Instant verification with sub-50ms response times for seamless integration.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">05</div>
-                    <h3>Rate Limiting</h3>
-                    <p>Per-funder limits prevent abuse while ensuring fair access.</p>
+                    <h3>Usage Tracking</h3>
+                    <p>Monitor your API usage with real-time dashboards, quotas, and usage alerts.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">06</div>
-                    <h3>Auto Expiration</h3>
-                    <p>Set custom TTL for registrations. Clean up automatically.</p>
+                    <h3>Flexible Plans</h3>
+                    <p>Four subscription tiers from Free to Enterprise with configurable limits.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">07</div>
+                    <h3>Simple Integration</h3>
+                    <p>REST API with API keys or OAuth 2.0. Client SDKs available.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">08</div>
+                    <h3>Smart Notifications</h3>
+                    <p>Email and webhook alerts when invoices are checked or registered by others.</p>
                 </div>
             </div>
         </div>
@@ -276,28 +300,28 @@
                     </thead>
                     <tbody>
                         <tr>
+                            <td><span class="level-badge l0">L0</span></td>
+                            <td>Party Tax ID + Country (supplier or buyer)</td>
+                            <td>Party-level check - verify if supplier/buyer has prior activity</td>
+                        </tr>
+                        <tr>
                             <td><span class="level-badge l1">L1</span></td>
-                            <td>Invoice Number + Issuer Tax ID + Issuer Country</td>
-                            <td>Minimum viable check - basic invoice identification</td>
+                            <td>Document Type + Supplier Tax ID + Supplier Country</td>
+                            <td>Supplier-level check - all invoices from a supplier</td>
                         </tr>
                         <tr>
                             <td><span class="level-badge l2">L2</span></td>
-                            <td>L1 + Amount + Currency</td>
-                            <td>Standard check - catches most duplicates</td>
+                            <td>L1 + Invoice Number</td>
+                            <td>Standard check - specific invoice identification</td>
                         </tr>
                         <tr>
                             <td><span class="level-badge l3">L3</span></td>
-                            <td>L2 + Invoice Date</td>
-                            <td>Date-specific check - distinguishes recurring invoices</td>
-                        </tr>
-                        <tr>
-                            <td><span class="level-badge l4">L4</span></td>
-                            <td>L3 + Buyer Tax ID + Buyer Country</td>
-                            <td>Full check - complete invoice fingerprint</td>
+                            <td>L2 + Amount + Currency</td>
+                            <td>Full check - complete invoice fingerprint with amount</td>
                         </tr>
                     </tbody>
                 </table>
-                <p class="hash-note">Higher levels provide more precise matching but require more data. A match at any level indicates the invoice may already be funded.</p>
+                <p class="hash-note">L0 enables early risk detection at party level. L1-L3 provide increasingly precise invoice matching. A match at any level may indicate prior funding activity.</p>
             </div>
         </div>
     </section>
@@ -308,28 +332,44 @@
                 <h2>Simple Pricing</h2>
                 <p>Start free, scale as you grow</p>
             </div>
-            <div class="pricing-grid">
+            <div class="pricing-grid pricing-grid-4">
                 <div class="pricing-card">
-                    <h3>Starter</h3>
-                    <div class="price">Free</div>
+                    <h3>Free</h3>
+                    <div class="price">$0<span>/month</span></div>
                     <ul>
-                        <li>1,000 checks/month</li>
-                        <li>500 registrations/month</li>
-                        <li>API access</li>
-                        <li>Email support</li>
+                        <li>100 checks/day</li>
+                        <li>500 checks/month</li>
+                        <li>2 registers/day</li>
+                        <li>10 party checks/day</li>
+                        <li>7-day party lookback</li>
+                        <li>API key access</li>
+                    </ul>
+                    <a href="#signup" class="btn btn-ghost btn-block">Get Started</a>
+                </div>
+                <div class="pricing-card">
+                    <h3>Basic</h3>
+                    <div class="price">$29<span>/month</span></div>
+                    <ul>
+                        <li>1,000 checks/day</li>
+                        <li>20,000 checks/month</li>
+                        <li>20 registers/day</li>
+                        <li>100 party checks/day</li>
+                        <li>30-day party lookback</li>
+                        <li>Email notifications</li>
                     </ul>
                     <a href="#signup" class="btn btn-ghost btn-block">Get Started</a>
                 </div>
                 <div class="pricing-card featured">
                     <div class="featured-badge">Popular</div>
-                    <h3>Professional</h3>
+                    <h3>Premium</h3>
                     <div class="price">$99<span>/month</span></div>
                     <ul>
-                        <li>20,000 checks/month</li>
-                        <li>10,000 registrations/month</li>
-                        <li>OAuth 2.0 support</li>
-                        <li>Priority support</li>
-                        <li>SDK access</li>
+                        <li>5,000 checks/day</li>
+                        <li>100,000 checks/month</li>
+                        <li>100 registers/day</li>
+                        <li>500 party checks/day</li>
+                        <li>90-day party lookback</li>
+                        <li>Email + Webhook alerts</li>
                     </ul>
                     <a href="#signup" class="btn btn-primary btn-block">Get Started</a>
                 </div>
@@ -338,10 +378,11 @@
                     <div class="price">Custom</div>
                     <ul>
                         <li>Unlimited checks</li>
-                        <li>Unlimited registrations</li>
-                        <li>Dedicated support</li>
-                        <li>SLA guarantee</li>
-                        <li>On-premise option</li>
+                        <li>Unlimited registers</li>
+                        <li>5,000 party checks/day</li>
+                        <li>365-day party lookback</li>
+                        <li>Priority notifications</li>
+                        <li>Dedicated support + SLA</li>
                     </ul>
                     <a href="mailto:sales@regstrava.com" class="btn btn-ghost btn-block">Contact Sales</a>
                 </div>
@@ -448,7 +489,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 RegStrava. All rights reserved.</p>
+                <p>&copy; 2025 RegStrava. All rights reserved.</p>
             </div>
         </div>
     </footer>

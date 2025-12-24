@@ -3,6 +3,27 @@
 // API Base URL
 const API_BASE = window.location.origin;
 
+// Mobile Menu Functions
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn = document.querySelector('.mobile-menu-btn');
+
+    if (menu && btn) {
+        menu.classList.toggle('active');
+        btn.classList.toggle('active');
+    }
+}
+
+function closeMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const btn = document.querySelector('.mobile-menu-btn');
+
+    if (menu && btn) {
+        menu.classList.remove('active');
+        btn.classList.remove('active');
+    }
+}
+
 // Signup Form Handler
 document.addEventListener('DOMContentLoaded', function() {
     const signupForm = document.getElementById('signup-form');
