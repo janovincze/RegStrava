@@ -31,18 +31,18 @@ type UsageRecord struct {
 
 // UsageHistory represents aggregated monthly usage
 type UsageHistory struct {
-	ID                   uuid.UUID `json:"id"`
-	FunderID             uuid.UUID `json:"funder_id"`
-	Year                 int       `json:"year"`
-	Month                int       `json:"month"`
-	TotalChecks          int       `json:"total_checks"`
-	TotalRegisters       int       `json:"total_registers"`
-	TotalPartyChecks     int       `json:"total_party_checks"`
-	TotalPartyRegisters  int       `json:"total_party_registers"`
-	PeakDailyChecks      int       `json:"peak_daily_checks"`
-	PeakDailyRegisters   int       `json:"peak_daily_registers"`
-	QuotaExceededCount   int       `json:"quota_exceeded_count"`
-	CreatedAt            time.Time `json:"created_at"`
+	ID                  uuid.UUID `json:"id"`
+	FunderID            uuid.UUID `json:"funder_id"`
+	Year                int       `json:"year"`
+	Month               int       `json:"month"`
+	TotalChecks         int       `json:"total_checks"`
+	TotalRegisters      int       `json:"total_registers"`
+	TotalPartyChecks    int       `json:"total_party_checks"`
+	TotalPartyRegisters int       `json:"total_party_registers"`
+	PeakDailyChecks     int       `json:"peak_daily_checks"`
+	PeakDailyRegisters  int       `json:"peak_daily_registers"`
+	QuotaExceededCount  int       `json:"quota_exceeded_count"`
+	CreatedAt           time.Time `json:"created_at"`
 }
 
 // UsageType represents the type of API usage
@@ -89,10 +89,10 @@ type UsageStats struct {
 
 // UsageResponse is the API response for usage stats
 type UsageResponse struct {
-	Usage          UsageStats        `json:"usage"`
+	Usage          UsageStats         `json:"usage"`
 	Subscription   FunderSubscription `json:"subscription"`
-	WarningLevel   string            `json:"warning_level,omitempty"` // "", "warning", "critical"
-	WarningMessage string            `json:"warning_message,omitempty"`
+	WarningLevel   string             `json:"warning_level,omitempty"` // "", "warning", "critical"
+	WarningMessage string             `json:"warning_message,omitempty"`
 }
 
 // QuotaExceededError represents a quota exceeded error
@@ -135,9 +135,9 @@ type UsageHistoryResponse struct {
 type EmailNotificationType string
 
 const (
-	EmailNotificationUsageWarning80  EmailNotificationType = "usage_warning_80"
-	EmailNotificationUsageWarning90  EmailNotificationType = "usage_warning_90"
-	EmailNotificationQuotaExceeded   EmailNotificationType = "quota_exceeded"
+	EmailNotificationUsageWarning80 EmailNotificationType = "usage_warning_80"
+	EmailNotificationUsageWarning90 EmailNotificationType = "usage_warning_90"
+	EmailNotificationQuotaExceeded  EmailNotificationType = "quota_exceeded"
 )
 
 // EmailNotification represents a sent email notification

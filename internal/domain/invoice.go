@@ -52,14 +52,14 @@ type InvoiceCheckRequest struct {
 
 // InvoiceCheckRawRequest represents a request with raw invoice data for server-side hashing
 type InvoiceCheckRawRequest struct {
-	DocumentType   string   `json:"document_type,omitempty"`   // Document type code (default: INV)
-	DocumentID     string   `json:"document_id" validate:"required"` // Invoice/document number
-	SupplierTaxID  string   `json:"supplier_tax_id" validate:"required"`
-	SupplierCountry string  `json:"supplier_country" validate:"required"`
-	BuyerTaxID     string   `json:"buyer_tax_id" validate:"required"`
-	BuyerCountry   string   `json:"buyer_country" validate:"required"`
-	Amount         *float64 `json:"amount,omitempty"`
-	Currency       string   `json:"currency,omitempty"`
+	DocumentType    string   `json:"document_type,omitempty"`         // Document type code (default: INV)
+	DocumentID      string   `json:"document_id" validate:"required"` // Invoice/document number
+	SupplierTaxID   string   `json:"supplier_tax_id" validate:"required"`
+	SupplierCountry string   `json:"supplier_country" validate:"required"`
+	BuyerTaxID      string   `json:"buyer_tax_id" validate:"required"`
+	BuyerCountry    string   `json:"buyer_country" validate:"required"`
+	Amount          *float64 `json:"amount,omitempty"`
+	Currency        string   `json:"currency,omitempty"`
 	// Deprecated fields (kept for backward compatibility)
 	InvoiceNumber string `json:"invoice_number,omitempty"` // Deprecated: use document_id
 	IssuerTaxID   string `json:"issuer_tax_id,omitempty"`  // Deprecated: use supplier_tax_id
@@ -69,11 +69,11 @@ type InvoiceCheckRawRequest struct {
 
 // InvoiceCheckResponse represents the response for an invoice check
 type InvoiceCheckResponse struct {
-	Found         bool                    `json:"found"`
-	MatchedLevels []string                `json:"matched_levels,omitempty"`
-	Details       map[string]MatchDetail  `json:"details,omitempty"`
+	Found         bool                   `json:"found"`
+	MatchedLevels []string               `json:"matched_levels,omitempty"`
+	Details       map[string]MatchDetail `json:"details,omitempty"`
 	// Deprecated fields (kept for backward compatibility)
-	Funded       bool       `json:"funded"`        // Deprecated: use found
+	Funded       bool       `json:"funded"`                  // Deprecated: use found
 	MatchedLevel *HashLevel `json:"matched_level,omitempty"` // Deprecated: use matched_levels
 	FundedAt     *time.Time `json:"funded_at,omitempty"`
 }
@@ -96,7 +96,7 @@ type InvoiceRegisterRequest struct {
 
 // InvoiceRegisterRawRequest represents a request with raw invoice data for registration
 type InvoiceRegisterRawRequest struct {
-	DocumentType    string   `json:"document_type,omitempty"`   // Document type code (default: INV)
+	DocumentType    string   `json:"document_type,omitempty"`         // Document type code (default: INV)
 	DocumentID      string   `json:"document_id" validate:"required"` // Invoice/document number
 	SupplierTaxID   string   `json:"supplier_tax_id" validate:"required"`
 	SupplierCountry string   `json:"supplier_country" validate:"required"`

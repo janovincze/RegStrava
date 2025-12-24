@@ -14,8 +14,8 @@ import (
 type contextKey string
 
 const (
-	FunderIDKey   contextKey = "funder_id"
-	FunderKey     contextKey = "funder"
+	FunderIDKey contextKey = "funder_id"
+	FunderKey   contextKey = "funder"
 )
 
 // AuthMiddleware provides authentication middleware

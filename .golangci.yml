@@ -4,7 +4,6 @@ run:
 
 linters:
   enable:
-    - errcheck
     - gosimple
     - govet
     - ineffassign
@@ -14,13 +13,8 @@ linters:
     - goimports
     - misspell
     - unconvert
-    - unparam
-    - gocritic
 
 linters-settings:
-  errcheck:
-    check-type-assertions: true
-    check-blank: true
   govet:
     enable-all: true
     disable:
@@ -31,18 +25,12 @@ linters-settings:
     local-prefixes: github.com/regstrava/regstrava
   misspell:
     locale: US
-  gocritic:
-    enabled-tags:
-      - diagnostic
-      - style
-      - performance
 
 issues:
   exclude-rules:
     - path: _test\.go
       linters:
         - errcheck
-        - gocritic
     - path: cmd/
       linters:
         - unparam

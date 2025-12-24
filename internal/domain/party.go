@@ -39,22 +39,22 @@ type PartyCheckRequest struct {
 
 // PartyCheckResponse represents the response for a party check
 type PartyCheckResponse struct {
-	Found             bool       `json:"found"`
-	PartyType         PartyType  `json:"party_type"`
-	Status            string     `json:"status"` // "new", "checked", "registered"
-	FirstSeen         *time.Time `json:"first_seen,omitempty"`
-	LastChecked       *time.Time `json:"last_checked,omitempty"`
-	LastRegistered    *time.Time `json:"last_registered,omitempty"`
-	CheckedByOthers   bool       `json:"checked_by_others"`   // Someone else checked this party
-	RegisteredByOthers bool      `json:"registered_by_others"` // Someone else registered this party
+	Found              bool       `json:"found"`
+	PartyType          PartyType  `json:"party_type"`
+	Status             string     `json:"status"` // "new", "checked", "registered"
+	FirstSeen          *time.Time `json:"first_seen,omitempty"`
+	LastChecked        *time.Time `json:"last_checked,omitempty"`
+	LastRegistered     *time.Time `json:"last_registered,omitempty"`
+	CheckedByOthers    bool       `json:"checked_by_others"`    // Someone else checked this party
+	RegisteredByOthers bool       `json:"registered_by_others"` // Someone else registered this party
 }
 
 // PartyHistoryRequest represents a request to query party history
 type PartyHistoryRequest struct {
-	TaxID      string    `json:"tax_id" validate:"required"`
-	Country    string    `json:"country" validate:"required"`
-	PartyType  PartyType `json:"party_type" validate:"required,oneof=buyer supplier"`
-	LookbackDays *int    `json:"lookback_days,omitempty"` // Override default lookback
+	TaxID        string    `json:"tax_id" validate:"required"`
+	Country      string    `json:"country" validate:"required"`
+	PartyType    PartyType `json:"party_type" validate:"required,oneof=buyer supplier"`
+	LookbackDays *int      `json:"lookback_days,omitempty"` // Override default lookback
 }
 
 // PartyHistoryResponse represents the response for a party history query
