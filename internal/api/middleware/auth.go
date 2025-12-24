@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+
 	"github.com/regstrava/regstrava/internal/domain"
 	"github.com/regstrava/regstrava/internal/service"
 )

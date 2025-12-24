@@ -9,10 +9,11 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/regstrava/regstrava/internal/api/middleware"
 	"github.com/regstrava/regstrava/internal/domain"
 	"github.com/regstrava/regstrava/internal/repository"
-	"golang.org/x/crypto/bcrypt"
 )
 
 // FunderHandler handles funder-related HTTP requests

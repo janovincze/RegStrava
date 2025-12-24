@@ -9,9 +9,10 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/regstrava/regstrava/internal/domain"
 	"github.com/regstrava/regstrava/internal/repository"
-	"golang.org/x/crypto/bcrypt"
 )
 
 // AuthService handles authentication logic

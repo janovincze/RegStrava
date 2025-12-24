@@ -12,7 +12,7 @@ type SubscriptionStatus string
 const (
 	SubscriptionStatusActive    SubscriptionStatus = "active"
 	SubscriptionStatusTrial     SubscriptionStatus = "trial"
-	SubscriptionStatusCanceled SubscriptionStatus = "canceled"
+	SubscriptionStatusCanceled  SubscriptionStatus = "canceled"
 	SubscriptionStatusExpired   SubscriptionStatus = "expired"
 	SubscriptionStatusSuspended SubscriptionStatus = "suspended"
 )
