@@ -17,10 +17,12 @@ import (
 // NewRouter creates and configures the HTTP router
 func NewRouter(
 	invoiceService *service.InvoiceService,
+	partyService *service.PartyService,
 	authService *service.AuthService,
 	hashService *service.HashService,
 	rateLimitService *service.RateLimitService,
 	funderRepo *repository.FunderRepository,
+	docTypeRepo *repository.DocumentTypeRepository,
 ) http.Handler {
 	r := chi.NewRouter()
 
@@ -36,8 +38,10 @@ func NewRouter(
 
 	// Create handlers
 	invoiceHandler := handlers.NewInvoiceHandler(invoiceService, hashService)
+	partyHandler := handlers.NewPartyHandler(partyService)
 	authHandler := handlers.NewAuthHandler(authService)
 	funderHandler := handlers.NewFunderHandler(funderRepo)
+	docTypeHandler := handlers.NewDocumentTypeHandler(docTypeRepo)
 
 	// Create middleware
 	authMiddleware := middleware.NewAuthMiddleware(authService)
@@ -75,6 +79,16 @@ func NewRouter(
 				r.Post("/me/regenerate-api-key", funderHandler.RegenerateAPIKey)
 				r.Get("/me/usage", funderHandler.GetUsageStats)
 			})
+
+			// Party endpoints (L0 - party level checks)
+			r.Route("/party", func(r chi.Router) {
+				r.Post("/check", partyHandler.Check)
+				r.Post("/register", partyHandler.Register)
+				r.Post("/history", partyHandler.History)
+			})
+
+			// Document types endpoint
+			r.Get("/document-types", docTypeHandler.List)
 		})
 	})
 

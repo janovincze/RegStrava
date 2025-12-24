@@ -206,8 +206,12 @@ async function testCheckInvoice() {
     const resultDiv = document.getElementById('test-result');
 
     const testData = {
-        invoice_number: 'TEST-' + Date.now(),
-        issuer_tax_id: 'TEST123456',
+        document_type: 'INV',
+        document_id: 'TEST-' + Date.now(),
+        supplier_tax_id: 'TEST123456',
+        supplier_country: 'DE',
+        buyer_tax_id: 'TEST654321',
+        buyer_country: 'AT',
         amount: 1000.00,
         currency: 'EUR'
     };

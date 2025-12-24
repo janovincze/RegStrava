@@ -61,12 +61,32 @@ func (h *InvoiceHandler) CheckRaw(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.InvoiceNumber == "" || req.IssuerTaxID == "" {
-		respondError(w, http.StatusBadRequest, "invoice_number and issuer_tax_id are required")
+	// Validate required fields (support both new and deprecated field names)
+	documentID := req.DocumentID
+	if documentID == "" {
+		documentID = req.InvoiceNumber // Backward compatibility
+	}
+	supplierTaxID := req.SupplierTaxID
+	if supplierTaxID == "" {
+		supplierTaxID = req.IssuerTaxID // Backward compatibility
+	}
+	supplierCountry := req.SupplierCountry
+	if supplierCountry == "" {
+		supplierCountry = req.IssuerCountry // Backward compatibility
+	}
+
+	if supplierTaxID == "" || supplierCountry == "" {
+		respondError(w, http.StatusBadRequest, "supplier_tax_id and supplier_country are required")
 		return
 	}
 
-	result, err := h.invoiceService.CheckInvoiceRaw(r.Context(), &req)
+	if req.BuyerTaxID == "" || req.BuyerCountry == "" {
+		respondError(w, http.StatusBadRequest, "buyer_tax_id and buyer_country are required")
+		return
+	}
+
+	// Use the enhanced check method that includes party-level checks
+	result, err := h.invoiceService.CheckInvoiceRawWithParty(r.Context(), &req)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "Failed to check invoice")
 		return
@@ -118,8 +138,23 @@ func (h *InvoiceHandler) RegisterRaw(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.InvoiceNumber == "" || req.IssuerTaxID == "" {
-		respondError(w, http.StatusBadRequest, "invoice_number and issuer_tax_id are required")
+	// Validate required fields (support both new and deprecated field names)
+	supplierTaxID := req.SupplierTaxID
+	if supplierTaxID == "" {
+		supplierTaxID = req.IssuerTaxID // Backward compatibility
+	}
+	supplierCountry := req.SupplierCountry
+	if supplierCountry == "" {
+		supplierCountry = req.IssuerCountry // Backward compatibility
+	}
+
+	if supplierTaxID == "" || supplierCountry == "" {
+		respondError(w, http.StatusBadRequest, "supplier_tax_id and supplier_country are required")
+		return
+	}
+
+	if req.BuyerTaxID == "" || req.BuyerCountry == "" {
+		respondError(w, http.StatusBadRequest, "buyer_tax_id and buyer_country are required")
 		return
 	}
 
