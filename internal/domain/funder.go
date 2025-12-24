@@ -8,16 +8,31 @@ import (
 
 // Funder represents a funding company that uses the registry
 type Funder struct {
-	ID               uuid.UUID `json:"id" db:"id"`
-	Name             string    `json:"name" db:"name"`
-	APIKeyHash       string    `json:"-" db:"api_key_hash"`
-	OAuthClientID    *string   `json:"oauth_client_id,omitempty" db:"oauth_client_id"`
-	OAuthSecretHash  *string   `json:"-" db:"oauth_secret_hash"`
-	TrackFundings    bool      `json:"track_fundings" db:"track_fundings"`
-	RateLimitDaily   int       `json:"rate_limit_daily" db:"rate_limit_daily"`
-	RateLimitMonthly int       `json:"rate_limit_monthly" db:"rate_limit_monthly"`
-	CreatedAt        time.Time `json:"created_at" db:"created_at"`
-	IsActive         bool      `json:"is_active" db:"is_active"`
+	ID                   uuid.UUID `json:"id" db:"id"`
+	Name                 string    `json:"name" db:"name"`
+	APIKeyHash           string    `json:"-" db:"api_key_hash"`
+	OAuthClientID        *string   `json:"oauth_client_id,omitempty" db:"oauth_client_id"`
+	OAuthSecretHash      *string   `json:"-" db:"oauth_secret_hash"`
+	TrackFundings        bool      `json:"track_fundings" db:"track_fundings"`
+	RateLimitDaily       int       `json:"rate_limit_daily" db:"rate_limit_daily"`
+	RateLimitMonthly     int       `json:"rate_limit_monthly" db:"rate_limit_monthly"`
+	PartyQueryLimitDaily int       `json:"party_query_limit_daily" db:"party_query_limit_daily"`
+	PartyLookbackDays    int       `json:"party_lookback_days" db:"party_lookback_days"`
+	SubscriptionTier     string    `json:"subscription_tier" db:"subscription_tier"`
+	NotificationConsent  bool      `json:"notification_consent" db:"notification_consent"`
+	CreatedAt            time.Time `json:"created_at" db:"created_at"`
+	IsActive             bool      `json:"is_active" db:"is_active"`
+}
+
+// SubscriptionTier represents a subscription tier with its limits
+type SubscriptionTier struct {
+	Name                 string `json:"name" db:"name"`
+	DisplayName          string `json:"display_name" db:"display_name"`
+	MaxDailyRequests     int    `json:"max_daily_requests" db:"max_daily_requests"`
+	MaxMonthlyRequests   int    `json:"max_monthly_requests" db:"max_monthly_requests"`
+	PartyQueryLimitDaily int    `json:"party_query_limit_daily" db:"party_query_limit_daily"`
+	PartyLookbackDays    int    `json:"party_lookback_days" db:"party_lookback_days"`
+	NotificationsEnabled bool   `json:"notifications_enabled" db:"notifications_enabled"`
 }
 
 // APIUsage tracks API usage for rate limiting

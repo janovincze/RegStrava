@@ -95,9 +95,12 @@
   -H "X-API-Key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "invoice_number": "INV-2024-001",
-    "issuer_tax_id": "123456789",
-    "issuer_country": "DE",
+    "document_type": "INV",
+    "document_id": "INV-2024-001",
+    "supplier_tax_id": "123456789",
+    "supplier_country": "DE",
+    "buyer_tax_id": "987654321",
+    "buyer_country": "AT",
     "amount": 10000.00,
     "currency": "EUR"
   }'</pre>
@@ -126,20 +129,44 @@
                         <h3>Check Invoice</h3>
                         <p class="text-muted">Verify if an invoice is already funded</p>
                         <form id="check-invoice-form" onsubmit="checkInvoice(event)">
-                            <div class="form-group">
-                                <label for="check-invoice-number">Invoice Number <span class="required">*</span></label>
-                                <input type="text" id="check-invoice-number" required placeholder="INV-2024-001">
-                                <span class="field-hint">Exactly as printed, including hyphens and prefixes</span>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="check-document-id">Document ID <span class="required">*</span></label>
+                                    <input type="text" id="check-document-id" required placeholder="INV-2024-001">
+                                    <span class="field-hint">Exactly as printed, including hyphens and prefixes</span>
+                                </div>
+                                <div class="form-group form-group-small">
+                                    <label for="check-document-type">Type</label>
+                                    <select id="check-document-type">
+                                        <option value="INV" selected>Invoice</option>
+                                        <option value="CN">Credit Note</option>
+                                        <option value="DN">Debit Note</option>
+                                        <option value="PO">Purchase Order</option>
+                                    </select>
+                                    <span class="field-hint">Document type</span>
+                                </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="check-issuer-tax-id">Issuer Tax ID <span class="required">*</span></label>
-                                    <input type="text" id="check-issuer-tax-id" required placeholder="123456789">
+                                    <label for="check-supplier-tax-id">Supplier Tax ID <span class="required">*</span></label>
+                                    <input type="text" id="check-supplier-tax-id" required placeholder="123456789">
                                     <span class="field-hint">Numbers only, no country prefix</span>
                                 </div>
                                 <div class="form-group form-group-small">
-                                    <label for="check-issuer-country">Country <span class="required">*</span></label>
-                                    <input type="text" id="check-issuer-country" required placeholder="DE" maxlength="2" style="text-transform: uppercase;">
+                                    <label for="check-supplier-country">Country <span class="required">*</span></label>
+                                    <input type="text" id="check-supplier-country" required placeholder="DE" maxlength="2" style="text-transform: uppercase;">
+                                    <span class="field-hint">ISO code</span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="check-buyer-tax-id">Buyer Tax ID <span class="required">*</span></label>
+                                    <input type="text" id="check-buyer-tax-id" required placeholder="987654321">
+                                    <span class="field-hint">Numbers only, no country prefix</span>
+                                </div>
+                                <div class="form-group form-group-small">
+                                    <label for="check-buyer-country">Country <span class="required">*</span></label>
+                                    <input type="text" id="check-buyer-country" required placeholder="AT" maxlength="2" style="text-transform: uppercase;">
                                     <span class="field-hint">ISO code</span>
                                 </div>
                             </div>
@@ -155,25 +182,8 @@
                                     <span class="field-hint">ISO code</span>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="check-invoice-date">Invoice Date</label>
-                                <input type="date" id="check-invoice-date">
-                                <span class="field-hint">Date as printed on the invoice</span>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="check-buyer-tax-id">Buyer Tax ID</label>
-                                    <input type="text" id="check-buyer-tax-id" placeholder="987654321">
-                                    <span class="field-hint">Numbers only, no country prefix</span>
-                                </div>
-                                <div class="form-group form-group-small">
-                                    <label for="check-buyer-country">Country</label>
-                                    <input type="text" id="check-buyer-country" placeholder="AT" maxlength="2" style="text-transform: uppercase;">
-                                    <span class="field-hint">ISO code</span>
-                                </div>
-                            </div>
                             <div class="hash-level-info">
-                                <span class="level-indicator">L1</span> Required fields generate minimum check
+                                <span class="level-indicator">L0-L3</span> Checks party (L0), relationship (L1), document (L2), and full (L3) levels
                             </div>
                             <button type="submit" class="btn btn-primary btn-block">Check Invoice</button>
                         </form>
@@ -185,20 +195,44 @@
                         <h3>Register Invoice</h3>
                         <p class="text-muted">Register an invoice as funded</p>
                         <form id="register-invoice-form" onsubmit="registerInvoice(event)">
-                            <div class="form-group">
-                                <label for="reg-invoice-number">Invoice Number <span class="required">*</span></label>
-                                <input type="text" id="reg-invoice-number" required placeholder="INV-2024-001">
-                                <span class="field-hint">Exactly as printed, including hyphens and prefixes</span>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="reg-document-id">Document ID <span class="required">*</span></label>
+                                    <input type="text" id="reg-document-id" required placeholder="INV-2024-001">
+                                    <span class="field-hint">Exactly as printed, including hyphens and prefixes</span>
+                                </div>
+                                <div class="form-group form-group-small">
+                                    <label for="reg-document-type">Type</label>
+                                    <select id="reg-document-type">
+                                        <option value="INV" selected>Invoice</option>
+                                        <option value="CN">Credit Note</option>
+                                        <option value="DN">Debit Note</option>
+                                        <option value="PO">Purchase Order</option>
+                                    </select>
+                                    <span class="field-hint">Document type</span>
+                                </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="reg-issuer-tax-id">Issuer Tax ID <span class="required">*</span></label>
-                                    <input type="text" id="reg-issuer-tax-id" required placeholder="123456789">
+                                    <label for="reg-supplier-tax-id">Supplier Tax ID <span class="required">*</span></label>
+                                    <input type="text" id="reg-supplier-tax-id" required placeholder="123456789">
                                     <span class="field-hint">Numbers only, no country prefix</span>
                                 </div>
                                 <div class="form-group form-group-small">
-                                    <label for="reg-issuer-country">Country <span class="required">*</span></label>
-                                    <input type="text" id="reg-issuer-country" required placeholder="DE" maxlength="2" style="text-transform: uppercase;">
+                                    <label for="reg-supplier-country">Country <span class="required">*</span></label>
+                                    <input type="text" id="reg-supplier-country" required placeholder="DE" maxlength="2" style="text-transform: uppercase;">
+                                    <span class="field-hint">ISO code</span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="reg-buyer-tax-id">Buyer Tax ID <span class="required">*</span></label>
+                                    <input type="text" id="reg-buyer-tax-id" required placeholder="987654321">
+                                    <span class="field-hint">Numbers only, no country prefix</span>
+                                </div>
+                                <div class="form-group form-group-small">
+                                    <label for="reg-buyer-country">Country <span class="required">*</span></label>
+                                    <input type="text" id="reg-buyer-country" required placeholder="AT" maxlength="2" style="text-transform: uppercase;">
                                     <span class="field-hint">ISO code</span>
                                 </div>
                             </div>
@@ -215,29 +249,12 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="reg-invoice-date">Invoice Date</label>
-                                <input type="date" id="reg-invoice-date">
-                                <span class="field-hint">Date as printed on the invoice</span>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="reg-buyer-tax-id">Buyer Tax ID</label>
-                                    <input type="text" id="reg-buyer-tax-id" placeholder="987654321">
-                                    <span class="field-hint">Numbers only, no country prefix</span>
-                                </div>
-                                <div class="form-group form-group-small">
-                                    <label for="reg-buyer-country">Country</label>
-                                    <input type="text" id="reg-buyer-country" placeholder="AT" maxlength="2" style="text-transform: uppercase;">
-                                    <span class="field-hint">ISO code</span>
-                                </div>
-                            </div>
-                            <div class="form-group">
                                 <label for="reg-expires">Expires In (days)</label>
                                 <input type="number" id="reg-expires" placeholder="730" value="730">
                                 <span class="field-hint">How long before registration auto-expires (default: 2 years)</span>
                             </div>
                             <div class="hash-level-info">
-                                <span class="level-indicator">L1-L4</span> More fields = more hash levels registered
+                                <span class="level-indicator">L1-L3</span> Registers relationship (L1), document (L2), and optionally full (L3) levels
                             </div>
                             <button type="submit" class="btn btn-primary btn-block">Register Invoice</button>
                         </form>
@@ -307,6 +324,9 @@
                         </thead>
                         <tbody>
                             <tr>
+                                <td colspan="3" class="endpoint-group">Invoice Endpoints</td>
+                            </tr>
+                            <tr>
                                 <td><span class="method post">POST</span></td>
                                 <td><code>/api/v1/invoices/check</code></td>
                                 <td>Check with pre-hashed data</td>
@@ -314,7 +334,7 @@
                             <tr>
                                 <td><span class="method post">POST</span></td>
                                 <td><code>/api/v1/invoices/check-raw</code></td>
-                                <td>Check with raw invoice data</td>
+                                <td>Check with raw invoice data (L0-L3)</td>
                             </tr>
                             <tr>
                                 <td><span class="method post">POST</span></td>
@@ -330,6 +350,32 @@
                                 <td><span class="method delete">DELETE</span></td>
                                 <td><code>/api/v1/invoices/{hash}</code></td>
                                 <td>Unregister an invoice</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="endpoint-group">Party Endpoints (L0)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method post">POST</span></td>
+                                <td><code>/api/v1/party/check</code></td>
+                                <td>Check buyer/supplier existence</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method post">POST</span></td>
+                                <td><code>/api/v1/party/register</code></td>
+                                <td>Register a party</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method post">POST</span></td>
+                                <td><code>/api/v1/party/history</code></td>
+                                <td>Query party check history</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="endpoint-group">Reference Data</td>
+                            </tr>
+                            <tr>
+                                <td><span class="method get">GET</span></td>
+                                <td><code>/api/v1/document-types</code></td>
+                                <td>List available document types</td>
                             </tr>
                         </tbody>
                     </table>
@@ -518,9 +564,12 @@
             const resultDiv = document.getElementById('check-result');
 
             const data = {
-                invoice_number: document.getElementById('check-invoice-number').value,
-                issuer_tax_id: document.getElementById('check-issuer-tax-id').value,
-                issuer_country: document.getElementById('check-issuer-country').value.toUpperCase()
+                document_type: document.getElementById('check-document-type').value,
+                document_id: document.getElementById('check-document-id').value,
+                supplier_tax_id: document.getElementById('check-supplier-tax-id').value,
+                supplier_country: document.getElementById('check-supplier-country').value.toUpperCase(),
+                buyer_tax_id: document.getElementById('check-buyer-tax-id').value,
+                buyer_country: document.getElementById('check-buyer-country').value.toUpperCase()
             };
 
             const amount = document.getElementById('check-amount').value;
@@ -528,16 +577,6 @@
 
             const currency = document.getElementById('check-currency').value;
             if (currency) data.currency = currency.toUpperCase();
-
-            const invoiceDate = document.getElementById('check-invoice-date').value;
-            if (invoiceDate) data.invoice_date = invoiceDate;
-
-            const buyerTaxId = document.getElementById('check-buyer-tax-id').value;
-            if (buyerTaxId) {
-                data.buyer_tax_id = buyerTaxId;
-                const buyerCountry = document.getElementById('check-buyer-country').value;
-                if (buyerCountry) data.buyer_country = buyerCountry.toUpperCase();
-            }
 
             resultDiv.innerHTML = '<div class="loading">Checking...</div>';
 
@@ -554,21 +593,28 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    if (result.funded) {
+                    if (result.found) {
+                        const levels = result.matched_levels ? result.matched_levels.join(', ') : 'N/A';
+                        let detailsHtml = '';
+                        if (result.details) {
+                            detailsHtml = Object.entries(result.details).map(([level, detail]) =>
+                                `<div><span class="label">${level}:</span> ${detail.status} (${new Date(detail.first_seen).toLocaleDateString()})</div>`
+                            ).join('');
+                        }
                         resultDiv.innerHTML = `
                             <div class="result-funded">
                                 <div class="result-icon">&#10007;</div>
-                                <div class="result-title">Already Funded</div>
+                                <div class="result-title">Match Found</div>
                                 <div class="result-detail">
-                                    <span class="label">Match Level:</span> L${result.matched_level}<br>
-                                    <span class="label">Funded At:</span> ${new Date(result.funded_at).toLocaleDateString()}
+                                    <span class="label">Matched Levels:</span> ${levels}<br>
+                                    ${detailsHtml}
                                 </div>
                             </div>`;
                     } else {
                         resultDiv.innerHTML = `
                             <div class="result-clear">
                                 <div class="result-icon">&#10003;</div>
-                                <div class="result-title">Not Funded</div>
+                                <div class="result-title">Not Found</div>
                                 <div class="result-detail">This invoice is not in the registry. Safe to fund.</div>
                             </div>`;
                     }
@@ -587,9 +633,12 @@
             const resultDiv = document.getElementById('register-result');
 
             const data = {
-                invoice_number: document.getElementById('reg-invoice-number').value,
-                issuer_tax_id: document.getElementById('reg-issuer-tax-id').value,
-                issuer_country: document.getElementById('reg-issuer-country').value.toUpperCase(),
+                document_type: document.getElementById('reg-document-type').value,
+                document_id: document.getElementById('reg-document-id').value,
+                supplier_tax_id: document.getElementById('reg-supplier-tax-id').value,
+                supplier_country: document.getElementById('reg-supplier-country').value.toUpperCase(),
+                buyer_tax_id: document.getElementById('reg-buyer-tax-id').value,
+                buyer_country: document.getElementById('reg-buyer-country').value.toUpperCase(),
                 funding_date: new Date().toISOString().split('T')[0]
             };
 
@@ -598,16 +647,6 @@
 
             const currency = document.getElementById('reg-currency').value;
             if (currency) data.currency = currency.toUpperCase();
-
-            const invoiceDate = document.getElementById('reg-invoice-date').value;
-            if (invoiceDate) data.invoice_date = invoiceDate;
-
-            const buyerTaxId = document.getElementById('reg-buyer-tax-id').value;
-            if (buyerTaxId) {
-                data.buyer_tax_id = buyerTaxId;
-                const buyerCountry = document.getElementById('reg-buyer-country').value;
-                if (buyerCountry) data.buyer_country = buyerCountry.toUpperCase();
-            }
 
             const expires = document.getElementById('reg-expires').value;
             if (expires) data.expires_in_days = parseInt(expires);
@@ -627,13 +666,14 @@
                 const result = await response.json();
 
                 if (response.ok) {
+                    const levels = result.hash_levels ? result.hash_levels.map(l => 'L' + l).join(', ') : 'N/A';
                     resultDiv.innerHTML = `
                         <div class="result-success">
                             <div class="result-icon">&#10003;</div>
                             <div class="result-title">Invoice Registered</div>
                             <div class="result-detail">
-                                <span class="label">Hash Level:</span> L${result.registered_level}<br>
-                                <span class="label">Expires:</span> ${result.expires_at ? new Date(result.expires_at).toLocaleDateString() : 'Never'}
+                                <span class="label">Hash Levels:</span> ${levels}<br>
+                                <span class="label">Registered At:</span> ${new Date(result.registered_at).toLocaleDateString()}
                             </div>
                         </div>`;
                     // Clear form

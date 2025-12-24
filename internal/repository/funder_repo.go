@@ -38,6 +38,11 @@ func (r *FunderRepository) Close() error {
 	return r.db.Close()
 }
 
+// GetDB returns the underlying database connection for sharing
+func (r *FunderRepository) GetDB() *sql.DB {
+	return r.db
+}
+
 // FindByID finds a funder by ID
 func (r *FunderRepository) FindByID(ctx context.Context, id uuid.UUID) (*domain.Funder, error) {
 	query := `

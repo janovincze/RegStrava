@@ -67,70 +67,141 @@ func (s *HashService) Hash(data string) string {
 }
 
 // GenerateHashes generates all hash levels from raw invoice data
+// New structure:
+// L1: doc_type + supplier (tax_id + country) + buyer (tax_id + country)
+// L2: L1 + document_id
+// L3: L2 + amount + currency
 func (s *HashService) GenerateHashes(req *domain.InvoiceCheckRawRequest) []string {
-	hashes := make([]string, 0, 4)
+	hashes := make([]string, 0, 3)
 
-	invoiceNumber := s.NormalizeInvoiceNumber(req.InvoiceNumber)
-	issuerTaxID := s.NormalizeTaxID(req.IssuerTaxID)
-	issuerCountry := s.NormalizeCountry(req.IssuerCountry)
+	// Handle backward compatibility with deprecated fields
+	documentType := req.DocumentType
+	if documentType == "" {
+		documentType = domain.DefaultDocumentType
+	}
+	documentType = s.NormalizeDocumentType(documentType)
 
-	// L1: Basic - invoice_number + issuer_tax_id + issuer_country
-	l1Data := fmt.Sprintf("%s|%s|%s", invoiceNumber, issuerTaxID, issuerCountry)
+	documentID := req.DocumentID
+	if documentID == "" {
+		documentID = req.InvoiceNumber // Backward compatibility
+	}
+	documentID = s.NormalizeInvoiceNumber(documentID)
+
+	supplierTaxID := req.SupplierTaxID
+	if supplierTaxID == "" {
+		supplierTaxID = req.IssuerTaxID // Backward compatibility
+	}
+	supplierTaxID = s.NormalizeTaxID(supplierTaxID)
+
+	supplierCountry := req.SupplierCountry
+	if supplierCountry == "" {
+		supplierCountry = req.IssuerCountry // Backward compatibility
+	}
+	supplierCountry = s.NormalizeCountry(supplierCountry)
+
+	buyerTaxID := s.NormalizeTaxID(req.BuyerTaxID)
+	buyerCountry := s.NormalizeCountry(req.BuyerCountry)
+
+	// L1: doc_type + supplier (tax_id + country) + buyer (tax_id + country)
+	l1Data := fmt.Sprintf("%s|%s|%s|%s|%s", documentType, supplierTaxID, supplierCountry, buyerTaxID, buyerCountry)
 	hashes = append(hashes, s.Hash(l1Data))
 
-	// L2: Standard - L1 + amount + currency
-	if req.Amount != nil && req.Currency != "" {
-		amount := s.NormalizeAmount(*req.Amount)
-		currency := s.NormalizeCurrency(req.Currency)
-		l2Data := fmt.Sprintf("%s|%s|%s", l1Data, amount, currency)
+	// L2: L1 + document_id
+	if documentID != "" {
+		l2Data := fmt.Sprintf("%s|%s", l1Data, documentID)
 		hashes = append(hashes, s.Hash(l2Data))
 
-		// L3: Dated - L2 + invoice_date
-		if req.InvoiceDate != "" {
-			invoiceDate := s.NormalizeDate(req.InvoiceDate)
-			l3Data := fmt.Sprintf("%s|%s", l2Data, invoiceDate)
+		// L3: L2 + amount + currency
+		if req.Amount != nil && req.Currency != "" {
+			amount := s.NormalizeAmount(*req.Amount)
+			currency := s.NormalizeCurrency(req.Currency)
+			l3Data := fmt.Sprintf("%s|%s|%s", l2Data, amount, currency)
 			hashes = append(hashes, s.Hash(l3Data))
-
-			// L4: Full - L3 + buyer_tax_id + buyer_country
-			if req.BuyerTaxID != "" && req.BuyerCountry != "" {
-				buyerTaxID := s.NormalizeTaxID(req.BuyerTaxID)
-				buyerCountry := s.NormalizeCountry(req.BuyerCountry)
-				l4Data := fmt.Sprintf("%s|%s|%s", l3Data, buyerTaxID, buyerCountry)
-				hashes = append(hashes, s.Hash(l4Data))
-			}
 		}
 	}
 
 	return hashes
 }
 
+// NormalizeDocumentType normalizes a document type code: uppercase
+func (s *HashService) NormalizeDocumentType(docType string) string {
+	return strings.ToUpper(strings.TrimSpace(docType))
+}
+
 // GenerateHashesForRegister generates hashes for registration from raw request
 func (s *HashService) GenerateHashesForRegister(req *domain.InvoiceRegisterRawRequest) []string {
 	checkReq := &domain.InvoiceCheckRawRequest{
+		DocumentType:    req.DocumentType,
+		DocumentID:      req.DocumentID,
+		SupplierTaxID:   req.SupplierTaxID,
+		SupplierCountry: req.SupplierCountry,
+		BuyerTaxID:      req.BuyerTaxID,
+		BuyerCountry:    req.BuyerCountry,
+		Amount:          req.Amount,
+		Currency:        req.Currency,
+		// Backward compatibility
 		InvoiceNumber: req.InvoiceNumber,
 		IssuerTaxID:   req.IssuerTaxID,
 		IssuerCountry: req.IssuerCountry,
-		Amount:        req.Amount,
-		Currency:      req.Currency,
-		InvoiceDate:   req.InvoiceDate,
-		BuyerTaxID:    req.BuyerTaxID,
-		BuyerCountry:  req.BuyerCountry,
 	}
 	return s.GenerateHashes(checkReq)
 }
 
 // DetermineHashLevel determines the hash level based on index (0-based)
+// New levels: 1=DocType, 2=Document, 3=Full
 func (s *HashService) DetermineHashLevel(index int) domain.HashLevel {
 	switch index {
 	case 0:
-		return domain.HashLevelBasic
+		return domain.HashLevelDocType  // L1
 	case 1:
-		return domain.HashLevelStandard
+		return domain.HashLevelDocument // L2
 	case 2:
-		return domain.HashLevelDated
-	case 3:
-		return domain.HashLevelFull
+		return domain.HashLevelFull     // L3
 	default:
-		return domain.HashLevelBasic
+		return domain.HashLevelDocType
 	}
+}
+
+// GeneratePartyHash generates a hash for a party (buyer or supplier)
+// L0: tax_id + country
+func (s *HashService) GeneratePartyHash(taxID, country string) string {
+	normalizedTaxID := s.NormalizeTaxID(taxID)
+	normalizedCountry := s.NormalizeCountry(country)
+	data := fmt.Sprintf("%s|%s", normalizedTaxID, normalizedCountry)
+	return s.Hash(data)
+}
+
+// GenerateAllHashes generates all hash levels including party hashes
+// Returns a map of level name to hash value
+func (s *HashService) GenerateAllHashes(req *domain.InvoiceCheckRawRequest) map[string]string {
+	result := make(map[string]string)
+
+	// Handle backward compatibility with deprecated fields
+	supplierTaxID := req.SupplierTaxID
+	if supplierTaxID == "" {
+		supplierTaxID = req.IssuerTaxID
+	}
+	supplierCountry := req.SupplierCountry
+	if supplierCountry == "" {
+		supplierCountry = req.IssuerCountry
+	}
+
+	// L0: Party hashes (separate for buyer and supplier)
+	if supplierTaxID != "" && supplierCountry != "" {
+		result["L0_supplier"] = s.GeneratePartyHash(supplierTaxID, supplierCountry)
+	}
+	if req.BuyerTaxID != "" && req.BuyerCountry != "" {
+		result["L0_buyer"] = s.GeneratePartyHash(req.BuyerTaxID, req.BuyerCountry)
+	}
+
+	// L1-L3: Document hashes
+	docHashes := s.GenerateHashes(req)
+	levels := []string{"L1", "L2", "L3"}
+	for i, hash := range docHashes {
+		if i < len(levels) {
+			result[levels[i]] = hash
+		}
+	}
+
+	return result
 }

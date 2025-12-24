@@ -42,7 +42,7 @@ func (r *InvoiceRepository) Close() error {
 // FindByHash finds an invoice hash by its hash value
 func (r *InvoiceRepository) FindByHash(ctx context.Context, hashValue string) (*domain.InvoiceHash, error) {
 	query := `
-		SELECT id, hash_value, hash_level, funded_at, funder_id, expires_at, created_at
+		SELECT id, hash_value, hash_level, COALESCE(document_type, 'INV'), funded_at, funder_id, expires_at, created_at
 		FROM invoice_hashes
 		WHERE hash_value = $1
 	`
@@ -52,6 +52,7 @@ func (r *InvoiceRepository) FindByHash(ctx context.Context, hashValue string) (*
 		&invoiceHash.ID,
 		&invoiceHash.HashValue,
 		&invoiceHash.HashLevel,
+		&invoiceHash.DocumentType,
 		&invoiceHash.FundedAt,
 		&invoiceHash.FunderID,
 		&invoiceHash.ExpiresAt,
@@ -71,14 +72,20 @@ func (r *InvoiceRepository) FindByHash(ctx context.Context, hashValue string) (*
 // Create creates a new invoice hash
 func (r *InvoiceRepository) Create(ctx context.Context, invoiceHash *domain.InvoiceHash) error {
 	query := `
-		INSERT INTO invoice_hashes (id, hash_value, hash_level, funded_at, funder_id, expires_at, created_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		INSERT INTO invoice_hashes (id, hash_value, hash_level, document_type, funded_at, funder_id, expires_at, created_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 	`
+
+	docType := invoiceHash.DocumentType
+	if docType == "" {
+		docType = domain.DefaultDocumentType
+	}
 
 	_, err := r.db.ExecContext(ctx, query,
 		invoiceHash.ID,
 		invoiceHash.HashValue,
 		invoiceHash.HashLevel,
+		docType,
 		invoiceHash.FundedAt,
 		invoiceHash.FunderID,
 		invoiceHash.ExpiresAt,

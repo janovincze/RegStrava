@@ -35,10 +35,20 @@ func main() {
 	}
 	defer funderRepo.Close()
 
+	// Get shared database connection for other repositories
+	db := funderRepo.GetDB()
+
+	// Initialize party repository (uses shared db)
+	partyRepo := repository.NewPartyRepository(db)
+
+	// Initialize document type repository (uses shared db)
+	docTypeRepo := repository.NewDocumentTypeRepository(db)
+
 	// Initialize services
 	hashService := service.NewHashService(cfg.HMACKey)
 	authService := service.NewAuthService(funderRepo, cfg.JWTSecret)
-	invoiceService := service.NewInvoiceService(invoiceRepo, hashService)
+	invoiceService := service.NewInvoiceService(invoiceRepo, partyRepo, hashService)
+	partyService := service.NewPartyService(partyRepo, hashService)
 	rateLimitService, err := service.NewRateLimitService(cfg.RedisURL)
 	if err != nil {
 		log.Fatalf("Failed to connect to Redis: %v", err)
@@ -47,10 +57,12 @@ func main() {
 	// Set up router
 	router := api.NewRouter(
 		invoiceService,
+		partyService,
 		authService,
 		hashService,
 		rateLimitService,
 		funderRepo,
+		docTypeRepo,
 	)
 
 	// Create server
